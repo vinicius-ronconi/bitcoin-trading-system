@@ -76,7 +76,7 @@ class MessageType:
     BALANCE = 'U2'
     BALANCE_RESPONSE = 'U3'
     CANCEL_ORDER = 'F'
-    OPEN_ORDERS = 'U4'
+    GET_ORDERS = 'U4'
     POSITION = 'U42'
     PLACE_ORDER = 'D'
     PLACE_ORDER_RESPONSE = '8'
@@ -85,8 +85,12 @@ class MessageType:
 
 MESSAGE_TYPE_CHOICES = {
     MessageType.BALANCE,
-    MessageType.OPEN_ORDERS,
+    MessageType.CANCEL_ORDER,
+    MessageType.GET_ORDERS,
+    MessageType.POSITION,
     MessageType.PLACE_ORDER,
+    MessageType.TRADE_HISTORY,
+    MessageType.TRADERS_RANK,
 }
 
 

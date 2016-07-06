@@ -51,12 +51,28 @@ class IOrdersApi(object):
         :type order_type: basestring
         :type price: float
         :type quantity: float
-        :rtype: dict  # TODO Create a bean
+        :rtype: list[trading_system.api.beans.PlacedOrder|trading_system.api.beans.Balance]
         """
 
     @abstractmethod
     def cancel_order(self, order_id):
         """
-        :param order_id: basestring
-        :return: dict  # TODO Create a bean
+        :type order_id: basestring
+        :rtype: list[trading_system.api.beans.PlacedOrder|trading_system.api.beans.Balance]
+        """
+
+    @abstractmethod
+    def get_pending_orders(self, page, page_size):
+        """
+        :type page: long
+        :type page_size: long
+        :rtype: list[trading_system.api.beans.PlacedOrder]
+        """
+
+    @abstractmethod
+    def get_executed_orders(self, page, page_size):
+        """
+        :type page: long
+        :type page_size: long
+        :rtype: list[trading_system.api.beans.PlacedOrder]
         """

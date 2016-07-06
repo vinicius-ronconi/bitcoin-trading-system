@@ -32,15 +32,6 @@ class BlinkTradeOrdersApi(IOrdersApi):
         self._validate_response(response)
         return self._parse_order_response(response)
 
-    def cancel_order(self, order_id):
-        msg = {
-            'MsgType': consts.MessageType.CANCEL_ORDER,
-            'ClOrdID': order_id,
-        }
-        response = self.client.send_request(msg)
-        self._validate_response(response)
-        return self._parse_order_response(response)
-
     @staticmethod
     def _validate_response(response):
         response_item = response['Responses'][0]
@@ -48,31 +39,34 @@ class BlinkTradeOrdersApi(IOrdersApi):
             raise exceptions.OrderRejectedException('Unable to place the order', response_item)
 
     def _parse_order_response(self, response):
-        order_response = [r for r in response['Responses'] if r['MsgType'] == consts.MessageType.PLACE_ORDER_RESPONSE]
-        order_response = order_response[0] if order_response else None
-        order_response = beans.PlacedOrder(
-            order_id=long(order_response.get('OrderID')),
-            time_in_force=str(order_response.get('TimeInForce')),
-            exec_id=long(order_response.get('ExecID')),
-            exec_type=str(order_response.get('ExecType')),
-            order_status=str(order_response.get('OrdStatus')),
-            cum_quantity=long(order_response.get('CumQty')),
-            price=long(order_response.get('Price')),
-            symbol=str(order_response.get('Symbol')),
-            order_quantity=long(order_response.get('OrderQty')),
-            last_shares=long(order_response.get('LastShares')),
-            last_px=long(order_response.get('LastPx')),
-            cxl_quantity=long(order_response.get('CxlQty')),
-            volume=long(order_response.get('Volume')) if order_response.get('Volume') else None,
-            leaves_quantity=long(order_response.get('LeavesQty')),
-            message_type=str(order_response.get('MsgType')),
-            exec_side=str(order_response.get('ExecSide')),
-            order_type=str(order_response.get('OrdType')),
-            order_rejection_reason=str(order_response.get('OrdRejReason')),
-            side=str(order_response.get('Side')),
-            client_order_id=long(order_response.get('ClOrdID')),
-            average_px=long(order_response.get('AvgPx')),
-        )
+        order_responses = [r for r in response['Responses'] if r['MsgType'] == consts.MessageType.PLACE_ORDER_RESPONSE]
+        order_list = []
+        for order in order_responses:
+            order_list.append(
+                beans.PlacedOrder(
+                    order_id=long(order.get('OrderID')),
+                    time_in_force=str(order.get('TimeInForce')),
+                    exec_id=long(order.get('ExecID')),
+                    exec_type=str(order.get('ExecType')),
+                    order_status=str(order.get('OrdStatus')),
+                    cum_quantity=long(order.get('CumQty')),
+                    price=long(order.get('Price')),
+                    symbol=str(order.get('Symbol')),
+                    order_quantity=long(order.get('OrderQty')),
+                    last_shares=long(order.get('LastShares')),
+                    last_px=long(order.get('LastPx')),
+                    cxl_quantity=long(order.get('CxlQty')),
+                    volume=long(order.get('Volume')) if order.get('Volume') else None,
+                    leaves_quantity=long(order.get('LeavesQty')),
+                    message_type=str(order.get('MsgType')),
+                    exec_side=str(order.get('ExecSide')),
+                    order_type=str(order.get('OrdType')),
+                    order_rejection_reason=str(order.get('OrdRejReason')),
+                    side=str(order.get('Side')),
+                    client_order_id=long(order.get('ClOrdID')),
+                    average_px=long(order.get('AvgPx')),
+                )
+            )
 
         balance_response = [r for r in response['Responses'] if r['MsgType'] == consts.MessageType.BALANCE_RESPONSE]
         balance_response = balance_response[0] if balance_response else None
@@ -86,4 +80,32 @@ class BlinkTradeOrdersApi(IOrdersApi):
             btc_locked=self.client.get_currency_value(broker.get('BTC_locked')),
         )
 
-        return[order_response, balance_response]
+        return order_list + [balance_response]
+
+    def cancel_order(self, order_id):
+        msg = {
+            'MsgType': consts.MessageType.CANCEL_ORDER,
+            'ClOrdID': order_id,
+        }
+        response = self.client.send_request(msg)
+        self._validate_response(response)
+        return self._parse_order_response(response)
+
+    def get_pending_orders(self, page, page_size):
+        return self._get_orders(orders_filter=['has_leaves_qty eq 1'], page=page, page_size=page_size)
+
+    def get_executed_orders(self, page, page_size):
+        return self._get_orders(orders_filter=['has_cum_qty eq 1'], page=page, page_size=page_size)
+
+    def _get_orders(self, orders_filter, page=0, page_size=100):
+        msg = {
+            'MsgType': consts.MessageType.GET_ORDERS,
+            'OrdersReqID': self.client.get_unique_id(),
+            'Page': page,
+            'PageSize': page_size,
+            'Filter': orders_filter,
+
+        }
+        response = self.client.send_request(msg)
+        self._validate_response(response)
+        return self._parse_order_response(response)
