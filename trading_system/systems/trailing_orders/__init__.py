@@ -16,6 +16,7 @@ class TrailingOrders(ITradingSystem):
         self.order_placement_perc = self._get_order_placement_percentage()
         self.stop_loss_trigger = self._get_stop_loss_trigger()
         self.next_operation = self._get_next_operation()
+        self.pending_order = None
 
         self.client = BlinkTradeClient(
             consts.Environment.PRODUCTION,
@@ -29,7 +30,8 @@ class TrailingOrders(ITradingSystem):
         print ''
         print ''
         print 'START BUY value is the lowest price to start tracking the quote to *** BUY *** bitcoins.'
-        print 'After reaching lowest value and the price raises a order_placement_perc, the buying order will be placed.'
+        print 'After reaching lowest value and the price raises a order_placement_perc, ' \
+              'the buying order will be placed.'
         print ''
         return raw_input('Insert the value to START BUY: ')
 
@@ -38,7 +40,8 @@ class TrailingOrders(ITradingSystem):
         print ''
         print ''
         print 'START SELL value is the lowest price to start tracking the quote to *** SELL *** bitcoins.'
-        print 'After reaching highest value and the price falls an order_placement_perc, the selling order will be placed.'
+        print 'After reaching highest value and the price falls an order_placement_perc, ' \
+              'the selling order will be placed.'
         print ''
         return raw_input('Insert the value to START SELL: ')
 
