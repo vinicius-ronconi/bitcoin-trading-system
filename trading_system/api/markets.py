@@ -48,7 +48,7 @@ class BlinkTradeMarketApi(IMarketApi):
 
     def _get_market_data(self, requested_info, params=''):
         url = '{domain}/api/{version}/{currency}/{type}{params}'.format(
-            domain=self.client.environment.server,
+            domain=self.client.environment_server,
             version=self.client.API_VERSION,
             currency=self.client.currency,
             type=requested_info,
