@@ -1,6 +1,6 @@
 from trading_system.api.clients import BlinkTradeClient
 from trading_system.api import consts
-from trading_system.trading_systems.settings import *
+from trading_system.systems.settings import *
 
 
 class ManualTradingSystem(object):
