@@ -17,17 +17,20 @@ class BlinkTradeAccountApi(IAccountApi):
         }
         response = self.client.send_request(msg)
         print response
-        balance = beans.Balance(currency=None, currency_locked=None, btc=None, btc_locked=None)
-        for broker_item in response['Responses']:
-            if broker_item[str(self.client.broker)]:
-                broker = broker_item[str(self.client.broker)]
-                balance = beans.Balance(
-                    currency=self.client.get_currency_value(broker.get(self.client.currency)),
-                    currency_locked=self.client.get_currency_value(
-                        broker.get('{currency}_locked'.format(currency=self.client.currency))
-                    ),
-                    btc=self.client.get_currency_value(broker.get('BTC')),
-                    btc_locked=self.client.get_currency_value(broker.get('BTC_locked')),
-                )
+        broker = [broker for broker in response['Responses'] if broker.get(str(self.client.broker))]
+        return self._make_balance_from_broker_dict(broker)
 
+    def _make_balance_from_broker_dict(self, broker):
+        if broker:
+            broker = broker[0]
+            balance = beans.Balance(
+                currency=self.client.get_currency_value(broker.get(self.client.currency)),
+                currency_locked=self.client.get_currency_value(
+                    broker.get('{currency}_locked'.format(currency=self.client.currency))
+                ),
+                btc=self.client.get_currency_value(broker.get('BTC')),
+                btc_locked=self.client.get_currency_value(broker.get('BTC_locked')),
+            )
+        else:
+            balance = beans.Balance(currency=None, currency_locked=None, btc=None, btc_locked=None)
         return balance

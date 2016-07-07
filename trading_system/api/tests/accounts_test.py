@@ -40,7 +40,7 @@ class AccountsTestCase(TestCase):
             u'Description': u'OK',
             u'Responses': [{
                 u'MsgType': u'U3',
-                u'4': {u'BTC_locked': 0, u'BRL': 6810428250, u'BRL_locked': 0, u'BTC': 0},
+                u'invalid_broker': {u'BTC_locked': 0, u'BRL': 6810428250, u'BRL_locked': 0, u'BTC': 0},
                 u'ClientID': 90856083,
                 u'BalanceReqID': 1467403164
             }]
