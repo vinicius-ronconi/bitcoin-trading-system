@@ -15,6 +15,9 @@ class ManualTradingSystem(object):
     def get_balance(self):
         return self.client.account.get_balance()
 
+    def get_pending_orders(self):
+        return self.client.orders.get_pending_orders(0, 100)
 
 if __name__ == '__main__':
     print ManualTradingSystem().get_balance()
+    print ManualTradingSystem().get_pending_orders()

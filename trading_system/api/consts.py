@@ -80,6 +80,7 @@ class MessageType:
     POSITION = 'U42'
     PLACE_ORDER = 'D'
     PLACE_ORDER_RESPONSE = '8'
+    ORDER_STATUS_RESPONSE = 'U5'
     TRADE_HISTORY = 'U32'
     TRADERS_RANK = 'U36'
 

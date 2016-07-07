@@ -172,3 +172,108 @@ class BlinkTradeOrdersApiTestCase(TestCase):
         self.assertIsInstance(order_response[0], beans.PlacedOrder)
         self.assertIsInstance(order_response[1], beans.Balance)
 
+    def test_it_gets_pending_orders(self):
+        self.client.send_request.return_value = {
+            u'Status': 200,
+            u'Description': u'OK',
+            u'Responses': [
+                {
+                    u'OrdListGrp': [
+                        [
+                            u'2961106',
+                            1459144231834,
+                            0,
+                            u'0',
+                            3220499,
+                            0,
+                            0,
+                            u'BTCBRL',
+                            u'1',
+                            u'2',
+                            3220499,
+                            225800000000,
+                            u'2016-07-06 13:44:53',
+                            0,
+                            u'1'
+                        ]
+                    ],
+                    u'PageSize': 20,
+                    u'OrdersReqID': 1467837196,
+                    u'MsgType': u'U5',
+                    u'Page': 0,
+                    u'Columns': [
+                        u'ClOrdID',
+                        u'OrderID',
+                        u'CumQty',
+                        u'OrdStatus',
+                        u'LeavesQty',
+                        u'CxlQty',
+                        u'AvgPx',
+                        u'Symbol',
+                        u'Side',
+                        u'OrdType',
+                        u'OrderQty',
+                        u'Price',
+                        u'OrderDate',
+                        u'Volume',
+                        u'TimeInForce'
+                    ]
+                }
+            ]
+        }
+        order_response = self.orders_api.get_pending_orders(page=0, page_size=100)
+        self.assertIsInstance(order_response, list)
+        self.assertIsInstance(order_response[0], beans.PlacedOrder)
+
+    def test_it_gets_executed_orders(self):
+        self.client.send_request.return_value = {
+            u'Status': 200,
+            u'Description': u'OK',
+            u'Responses': [
+                {
+                    u'OrdListGrp': [
+                        [
+                            u'2961106',
+                            1459144231834,
+                            0,
+                            u'0',
+                            3220499,
+                            0,
+                            0,
+                            u'BTCBRL',
+                            u'1',
+                            u'2',
+                            3220499,
+                            225800000000,
+                            u'2016-07-06 13:44:53',
+                            0,
+                            u'1'
+                        ]
+                    ],
+                    u'PageSize': 20,
+                    u'OrdersReqID': 1467837196,
+                    u'MsgType': u'U5',
+                    u'Page': 0,
+                    u'Columns': [
+                        u'ClOrdID',
+                        u'OrderID',
+                        u'CumQty',
+                        u'OrdStatus',
+                        u'LeavesQty',
+                        u'CxlQty',
+                        u'AvgPx',
+                        u'Symbol',
+                        u'Side',
+                        u'OrdType',
+                        u'OrderQty',
+                        u'Price',
+                        u'OrderDate',
+                        u'Volume',
+                        u'TimeInForce'
+                    ]
+                }
+            ]
+        }
+        order_response = self.orders_api.get_executed_orders(page=0, page_size=100)
+        self.assertIsInstance(order_response, list)
+        self.assertIsInstance(order_response[0], beans.PlacedOrder)
