@@ -95,4 +95,4 @@ class TrailingOrdersTestCase(TestCase):
     def test_it_does_not_start_tracking(self):
         self._set_up_for_buying_purposes(self.START_VALUE + 0.01, self.CURRENT_BALANCE, is_tracking=False)
         self.system.run()
-        self._assert_results(buy_call_count=0, sell_call_count=0, order_side=consts.OrderSide.BUY, is_tracking=True)
+        self._assert_results(buy_call_count=0, sell_call_count=0, order_side=consts.OrderSide.BUY, is_tracking=False)
