@@ -27,15 +27,16 @@ class ManualTradingSystem(object):
 
         valid_bids = [bid for bid in order_book.bids if bid.price >= valid_bid_price]
         grouped_bids = self._group_list_by_user(valid_bids)
-        print '----- {} BIDDERS -----'.format(len(grouped_bids))
-        print grouped_bids
-        print 'Total amount = {}'.format(self._get_total_amount(grouped_bids))
-
         valid_asks = [ask for ask in order_book.asks if ask.price <= valid_ask_price]
         grouped_asks = self._group_list_by_user(valid_asks)
-        print '----- {} ASKERS -----'.format(len(grouped_asks))
+        print '{quantity} bidders - Amount: {amount}'.format(
+            quantity=len(grouped_bids), amount=self._get_total_amount(grouped_bids)
+        )
+        print '{quantity} askers - Amount: {amount}'.format(
+            quantity=len(grouped_asks), amount=self._get_total_amount(grouped_asks)
+        )
+        print grouped_bids
         print grouped_asks
-        print 'Total amount = {}'.format(self._get_total_amount(grouped_asks))
 
     @staticmethod
     def _group_list_by_user(order_list):
