@@ -1,3 +1,4 @@
+from datetime import datetime
 from trading_system.api import consts
 from trading_system.api.clients import BlinkTradeClient
 from trading_system.systems.interfaces import ITradingSystem
@@ -5,8 +6,15 @@ from trading_system.systems.settings import *
 
 
 class TrailingOrders(ITradingSystem):
+    """
+    :type next_operation: basestring
+    :type is_tracking: bool
+    :type balance: trading_system.api.beans.Balance
+    :type pending_orders; list[trading_system.api.beans.PlacedOrder]
+    """
     next_operation = NotImplemented
     is_tracking = NotImplemented
+    balance = NotImplemented
     pending_orders = []
 
     def __init__(self):
@@ -82,11 +90,9 @@ class TrailingOrders(ITradingSystem):
         sell_price = self.stop_value * ((100 - self.order_placement_perc) / 100)
         return self._get_rounded_value(sell_price)
 
-    def _reset_tracking_status(self):
-        pass
-
     def run(self):
         self.pending_orders = self.client.orders.get_pending_orders(0, 2)
+        self.balance = self.client.account.get_balance()
         current_ticker = self.client.market.get_ticker()
         evaluate_func = self._get_evaluation_type()
         evaluate_func(current_ticker.last_value)
@@ -100,38 +106,46 @@ class TrailingOrders(ITradingSystem):
             consts.OrderSide.SELL: self.evaluate_selling_conditions,
         }[self.next_operation]
 
-    def evaluate_pending_orders(self):
+    def evaluate_pending_orders(self, last_quote):
         # TODO Check if should cancel order
+        # Cancel buying order if last_quote > order price * order_placement_perc
+        # Cancel selling order if last_quote < order price * order_placement_perc
         pass
 
     def evaluate_buying_conditions(self, last_quote):
-        print 'evaluate_buying_conditions'
         evaluate_func = self._get_buy_operation_func()
         evaluate_func(last_quote)
 
     def _get_buy_operation_func(self):
-        print self.is_tracking
         return {
             True: self.evaluate_last_quote_to_buy_bitcoins,
             False: self.evaluate_last_quote_to_start_buying_track,
         }[self.is_tracking]
 
     def evaluate_last_quote_to_buy_bitcoins(self, last_quote):
-        print 'evaluate_last_quote_to_buy_bitcoins'
         if last_quote >= self.buy_price:
-            print 'BUY!!!'
-            self.client.orders.buy_bitcoins(consts.OrderType.LIMITED_ORDER, last_quote, 100)  # TODO Get Quantity
+            quantity = self.client.get_satoshi_value(self.balance.currency/last_quote)
+            self.log_info('BUYING {quantity} BITCOINS - price: {value}'.format(quantity=quantity, value=last_quote))
+            self.client.orders.buy_bitcoins(consts.OrderType.LIMITED_ORDER, last_quote, quantity)
+            self.next_operation = consts.OrderSide.SELL
+            self.is_tracking = False
 
     @staticmethod
     def _get_rounded_value(value):
         return round(value, 2)
 
     def evaluate_last_quote_to_start_buying_track(self, last_quote):
-        print 'evaluate_last_quote_to_start_buying_track'
         self.is_tracking = last_quote <= self.start_value
+        if self.is_tracking:
+            self.log_info('Tracking values to place a buy order')
 
     def evaluate_selling_conditions(self, last_quote):
         pass
+
+    @staticmethod
+    def log_info(text):
+        curr = datetime.now()
+        print '{time} - {text}'.format(time=curr.strftime('%Y-%m-%d %H:%M:%S'), text=text)
 
 
 if __name__ == '__main__':
