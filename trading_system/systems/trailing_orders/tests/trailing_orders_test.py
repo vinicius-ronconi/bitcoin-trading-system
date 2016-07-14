@@ -42,6 +42,15 @@ class TrailingOrdersTestCase(TestCase):
         self.addCleanup(stop_loss_trigger_patcher.stop)
         stop_loss_trigger_patcher.start()
 
+    def test_it_places_a_buy_order(self):
+        self._set_up_for_buying_purposes(self._get_buy_order_value(), self.CURRENT_BALANCE, is_tracking=True)
+        self.system.run()
+        self._assert_results(buy_call_count=1, sell_call_count=0, order_side=consts.OrderSide.SELL, is_tracking=False)
+
+    def _get_buy_order_value(self):
+        return round(self.START_VALUE * ((100 + self.ORDER_PLACEMENT_PERC) / 100), 2)
+
+    def _set_up_for_buying_purposes(self, last_value, current_balance, is_tracking):
         self.next_operation_method = mock.MagicMock(return_value=consts.OrderSide.BUY)
         order_side_patcher = mock.patch(
             'trading_system.systems.trailing_orders.TrailingOrders._get_next_operation',
@@ -52,15 +61,6 @@ class TrailingOrdersTestCase(TestCase):
 
         self.system = TrailingOrders()
 
-    def test_it_places_a_buy_order(self):
-        self._set_up_for_buying_purposes(self._get_order_placement_value(), self.CURRENT_BALANCE, is_tracking=True)
-        self.system.run()
-        self._assert_results(buy_call_count=1, sell_call_count=0, order_side=consts.OrderSide.SELL, is_tracking=False)
-
-    def _get_order_placement_value(self):
-        return round(self.START_VALUE * ((100 + self.ORDER_PLACEMENT_PERC) / 100), 2)
-
-    def _set_up_for_buying_purposes(self, last_value, current_balance, is_tracking):
         self.system.is_tracking = is_tracking
         self.system.client = mock.Mock()
         self.system.client.orders.get_pending_orders.return_value = []
@@ -82,7 +82,7 @@ class TrailingOrdersTestCase(TestCase):
 
     def test_it_does_not_place_a_buy_order_besides_is_tracking(self):
         self._set_up_for_buying_purposes(
-            self._get_order_placement_value() - 0.01, self.CURRENT_BALANCE, is_tracking=True
+            self._get_buy_order_value() - 0.01, self.CURRENT_BALANCE, is_tracking=True
         )
         self.system.run()
         self._assert_results(buy_call_count=0, sell_call_count=0, order_side=consts.OrderSide.BUY, is_tracking=True)
@@ -96,3 +96,52 @@ class TrailingOrdersTestCase(TestCase):
         self._set_up_for_buying_purposes(self.START_VALUE + 0.01, self.CURRENT_BALANCE, is_tracking=False)
         self.system.run()
         self._assert_results(buy_call_count=0, sell_call_count=0, order_side=consts.OrderSide.BUY, is_tracking=False)
+
+    def test_it_places_a_sell_order(self):
+        self._set_up_for_selling_purposes(self._get_sell_order_value(), self.CURRENT_BALANCE, is_tracking=True)
+        self.system.run()
+        self._assert_results(buy_call_count=0, sell_call_count=1, order_side=consts.OrderSide.BUY, is_tracking=False)
+
+    def _get_sell_order_value(self):
+        return round(self.STOP_VALUE * ((100 - self.ORDER_PLACEMENT_PERC) / 100), 2)
+
+    def _set_up_for_selling_purposes(self, last_value, btc_balance, is_tracking):
+        self.next_operation_method = mock.MagicMock(return_value=consts.OrderSide.SELL)
+        order_side_patcher = mock.patch(
+            'trading_system.systems.trailing_orders.TrailingOrders._get_next_operation',
+            self.next_operation_method
+        )
+        self.addCleanup(order_side_patcher.stop)
+        order_side_patcher.start()
+
+        self.system = TrailingOrders()
+
+        self.system.is_tracking = is_tracking
+        self.system.client = mock.Mock()
+        self.system.client.orders.get_pending_orders.return_value = []
+        self.system.client.account.get_balance.return_value = beans.Balance(
+            currency=0, currency_locked=0, btc=btc_balance, btc_locked=0,
+        )
+        self.system.client.market.get_ticker.return_value = beans.Ticker(
+            last_value=last_value,
+            currency_pair='BTCBRL', highest_value=2300, lowest_value=2200, best_sell_order=2205, best_buy_order=2195,
+            volume_btc=200, volume_currency=400000,
+        )
+
+    def test_it_does_not_place_a_sell_order_besides_is_tracking(self):
+        self._set_up_for_selling_purposes(
+            self._get_sell_order_value() + 0.01, self.CURRENT_BALANCE, is_tracking=True
+        )
+        self.system.run()
+        self._assert_results(buy_call_count=0, sell_call_count=0, order_side=consts.OrderSide.SELL, is_tracking=True)
+
+    def test_it_starts_tracking_for_selling_purposes(self):
+        self._set_up_for_selling_purposes(self.STOP_VALUE, self.CURRENT_BALANCE, is_tracking=False)
+        self.system.run()
+        self._assert_results(buy_call_count=0, sell_call_count=0, order_side=consts.OrderSide.SELL, is_tracking=True)
+
+    def test_it_does_not_start_tracking_for_selling_purposes(self):
+        self._set_up_for_selling_purposes(self.STOP_VALUE - 0.01, self.CURRENT_BALANCE, is_tracking=False)
+        self.system.run()
+        self._assert_results(buy_call_count=0, sell_call_count=0, order_side=consts.OrderSide.SELL, is_tracking=False)
+

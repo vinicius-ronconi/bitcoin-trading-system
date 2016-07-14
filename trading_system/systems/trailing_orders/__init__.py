@@ -18,6 +18,7 @@ class TrailingOrders(ITradingSystem):
     pending_orders = []
 
     def __init__(self):
+        # TODO receive the client as parameter
         print '---------------------------------------'
         print '-----  SETUP THE TRAILING ORDERS  -----'
         print '---------------------------------------'
@@ -96,6 +97,7 @@ class TrailingOrders(ITradingSystem):
         current_ticker = self.client.market.get_ticker()
         evaluate_func = self._get_evaluation_type()
         evaluate_func(current_ticker.last_value)
+        # TODO Update start and stop value according to the last quote
 
     def _get_evaluation_type(self):
         if self.pending_orders:
@@ -139,13 +141,35 @@ class TrailingOrders(ITradingSystem):
         if self.is_tracking:
             self.log_info('Tracking values to place a buy order')
 
-    def evaluate_selling_conditions(self, last_quote):
-        pass
-
     @staticmethod
     def log_info(text):
         curr = datetime.now()
         print '{time} - {text}'.format(time=curr.strftime('%Y-%m-%d %H:%M:%S'), text=text)
+
+    def evaluate_selling_conditions(self, last_quote):
+        # TODO stop loss
+        evaluate_func = self._get_sell_operation_func()
+        evaluate_func(last_quote)
+
+    def _get_sell_operation_func(self):
+        return {
+            True: self.evaluate_last_quote_to_sell_bitcoins,
+            False: self.evaluate_last_quote_to_start_selling_track,
+        }[self.is_tracking]
+
+    def evaluate_last_quote_to_sell_bitcoins(self, last_quote):
+        if last_quote <= self.sell_price:
+            self.log_info('SELLING {quantity} BITCOINS - price: {value}'.format(
+                quantity=self.balance.btc, value=last_quote)
+            )
+            self.client.orders.sell_bitcoins(consts.OrderType.LIMITED_ORDER, last_quote, self.balance.btc)
+            self.next_operation = consts.OrderSide.BUY
+            self.is_tracking = False
+
+    def evaluate_last_quote_to_start_selling_track(self, last_quote):
+        self.is_tracking = last_quote >= self.stop_value
+        if self.is_tracking:
+            self.log_info('Tracking values to place a sell order')
 
 
 if __name__ == '__main__':
