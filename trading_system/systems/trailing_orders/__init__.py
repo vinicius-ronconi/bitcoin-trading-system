@@ -7,6 +7,10 @@ from trading_system.systems.settings import *
 
 class TrailingOrders(ITradingSystem):
     """
+    :type start_value: float
+    :type stop_value: float
+    :type order_placement_perc: float
+    :type stop_loss_trigger: float
     :type next_operation: basestring
     :type is_tracking: bool
     :type balance: trading_system.api.beans.Balance
@@ -97,7 +101,8 @@ class TrailingOrders(ITradingSystem):
         current_ticker = self.client.market.get_ticker()
         evaluate_func = self._get_evaluation_type()
         evaluate_func(current_ticker.last_value)
-        # TODO Update start and stop value according to the last quote
+
+        self.update_start_stop_values_if_necessary(current_ticker.last_value)
 
     def _get_evaluation_type(self):
         if self.pending_orders:
@@ -170,6 +175,14 @@ class TrailingOrders(ITradingSystem):
         self.is_tracking = last_quote >= self.stop_value
         if self.is_tracking:
             self.log_info('Tracking values to place a sell order')
+
+    def update_start_stop_values_if_necessary(self, last_quote):
+        if self.start_value <= last_quote <= self.stop_value:
+            return
+
+        reference = self.start_value if last_quote < self.start_value else self.stop_value
+        self.start_value = self._get_rounded_value(self.start_value * (last_quote / reference))
+        self.stop_value = self._get_rounded_value(self.stop_value * (last_quote / reference))
 
 
 if __name__ == '__main__':

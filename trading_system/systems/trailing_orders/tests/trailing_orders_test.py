@@ -145,3 +145,24 @@ class TrailingOrdersTestCase(TestCase):
         self.system.run()
         self._assert_results(buy_call_count=0, sell_call_count=0, order_side=consts.OrderSide.SELL, is_tracking=False)
 
+    def test_it_update_start_stop_values_if_necessary(self):
+        self._set_up_for_selling_purposes(self.STOP_VALUE - 0.01, self.CURRENT_BALANCE, is_tracking=False)
+        last_quote = self.START_VALUE * 0.5
+        self.system.update_start_stop_values_if_necessary(last_quote)
+        self.assertEqual(self.system.start_value, last_quote)
+        self.assertEqual(self.system.stop_value, self.STOP_VALUE * 0.5)
+
+        self.system.start_value = self.START_VALUE
+        self.system.stop_value = self.STOP_VALUE
+
+        last_quote = self.STOP_VALUE * 2
+        self.system.update_start_stop_values_if_necessary(last_quote)
+        self.assertEqual(self.system.start_value, self.START_VALUE * 2)
+        self.assertEqual(self.system.stop_value, last_quote)
+
+        self.system.start_value = self.START_VALUE
+        self.system.stop_value = self.STOP_VALUE
+        last_quote = (self.START_VALUE + self.STOP_VALUE) / 2
+        self.system.update_start_stop_values_if_necessary(last_quote)
+        self.assertEqual(self.system.start_value, self.START_VALUE)
+        self.assertEqual(self.system.stop_value, self.STOP_VALUE)
