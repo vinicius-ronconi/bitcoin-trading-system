@@ -21,8 +21,11 @@ class TrailingOrders(ITradingSystem):
     balance = NotImplemented
     pending_orders = []
 
-    def __init__(self):
-        # TODO receive the client as parameter
+    def __init__(self, client):
+        """
+        :type client: trading_system.api.interfaces.IClient
+        """
+        self.client = client
         print '---------------------------------------'
         print '-----  SETUP THE TRAILING ORDERS  -----'
         print '---------------------------------------'
@@ -32,13 +35,6 @@ class TrailingOrders(ITradingSystem):
         self.stop_loss_trigger = self._get_stop_loss_trigger()
         self.next_operation = self._get_next_operation()
         self.is_tracking = False
-
-        self.client = BlinkTradeClient(
-            consts.Environment.PRODUCTION,
-            consts.Currency.BRAZILIAN_REAIS,
-            consts.Broker.FOXBIT,
-            BLINKTRADE_KEY, BLINKTRADE_SECRET,
-        )
 
     @staticmethod
     def _get_start_value():

@@ -2,7 +2,6 @@ import datetime
 import hashlib
 import hmac
 import time
-from abc import ABCMeta
 
 import requests
 
@@ -12,11 +11,10 @@ from trading_system.api import (
     orders,
 )
 from trading_system.api import consts
+from trading_system.api.interfaces import IClient
 
 
-class BlinkTradeClient(object):
-    __metaclass__ = ABCMeta
-
+class BlinkTradeClient(IClient):
     API_VERSION = 'v1'
     ENV_TYPE_TO_SERVER_MAP = {
         consts.Environment.PRODUCTION: 'https://api.blinktrade.com',

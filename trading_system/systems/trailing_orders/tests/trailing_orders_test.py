@@ -1,6 +1,7 @@
 from unittest import TestCase
 import mock
 from trading_system.api import beans, consts
+from trading_system.api.interfaces import IClient
 from trading_system.systems.trailing_orders import TrailingOrders
 
 
@@ -59,10 +60,10 @@ class TrailingOrdersTestCase(TestCase):
         self.addCleanup(order_side_patcher.stop)
         order_side_patcher.start()
 
-        self.system = TrailingOrders()
+        client = mock.Mock(IClient)
+        self.system = TrailingOrders(client)
 
         self.system.is_tracking = is_tracking
-        self.system.client = mock.Mock()
         self.system.client.orders.get_pending_orders.return_value = []
         self.system.client.account.get_balance.return_value = beans.Balance(
             currency=current_balance, currency_locked=0, btc=0, btc_locked=0,
@@ -114,10 +115,10 @@ class TrailingOrdersTestCase(TestCase):
         self.addCleanup(order_side_patcher.stop)
         order_side_patcher.start()
 
-        self.system = TrailingOrders()
+        client = mock.Mock(IClient)
+        self.system = TrailingOrders(client)
 
         self.system.is_tracking = is_tracking
-        self.system.client = mock.Mock()
         self.system.client.orders.get_pending_orders.return_value = []
         self.system.client.account.get_balance.return_value = beans.Balance(
             currency=0, currency_locked=0, btc=btc_balance, btc_locked=0,

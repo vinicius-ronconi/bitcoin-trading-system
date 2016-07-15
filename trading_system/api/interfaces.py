@@ -11,6 +11,35 @@ class IAccountApi(object):
         """
 
 
+class IClient(object):
+    """
+    :type account: trading_system.api.interfaces.IAccountApi
+    :type market: trading_system.api.interfaces.IMarketApi
+    :type orders: trading_system.api.interfaces.IOrdersApi
+    """
+    __metaclass__ = ABCMeta
+
+    account = NotImplemented
+    market = NotImplemented
+    orders = NotImplemented
+
+    @staticmethod
+    @abstractmethod
+    def get_currency_value(satoshi):
+        """
+        :type satoshi: long
+        :rtype: float
+        """
+
+    @staticmethod
+    @abstractmethod
+    def get_satoshi_value(value):
+        """
+        :type value: float
+        :rtype: long
+        """
+
+
 class IMarketApi(object):
     __metaclass__ = ABCMeta
 
