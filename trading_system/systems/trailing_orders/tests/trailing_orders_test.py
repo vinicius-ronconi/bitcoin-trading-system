@@ -5,11 +5,11 @@ from trading_system.systems.trailing_orders import TrailingOrders
 
 
 class TrailingOrdersTestCase(TestCase):
-    CURRENT_BALANCE = 10000
-    START_VALUE = 2000
-    STOP_VALUE = 2500
+    CURRENT_BALANCE = 10000.0
+    START_VALUE = 2000.0
+    STOP_VALUE = 2500.0
     ORDER_PLACEMENT_PERC = 1.5
-    STOP_LOSS_TRIGGER = 2
+    STOP_LOSS_TRIGGER = 2.0
 
     def setUp(self):
         self.get_start_value_method = mock.MagicMock(return_value=self.START_VALUE)
@@ -166,3 +166,10 @@ class TrailingOrdersTestCase(TestCase):
         self.system.update_start_stop_values_if_necessary(last_quote)
         self.assertEqual(self.system.start_value, self.START_VALUE)
         self.assertEqual(self.system.stop_value, self.STOP_VALUE)
+
+    def test_it_stop_loss_when_not_tracking(self):
+        self._set_up_for_selling_purposes(
+            self.START_VALUE * ((100.0 - self.STOP_LOSS_TRIGGER) / 100) - 0.01, self.CURRENT_BALANCE, is_tracking=False
+        )
+        self.system.run()
+        self._assert_results(buy_call_count=0, sell_call_count=1, order_side=consts.OrderSide.BUY, is_tracking=False)

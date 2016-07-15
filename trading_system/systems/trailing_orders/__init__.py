@@ -75,7 +75,7 @@ class TrailingOrders(ITradingSystem):
         print 'When the price reach this limit, a selling order will be placed'
         print 'Left it empty to skip stop loss setup'
         print ''
-        return raw_input('Insert the order_placement_perc to place the stop loss order: ')
+        return raw_input('Insert the percentage to place the stop loss order: ')
 
     @staticmethod
     def _get_next_operation():
@@ -92,8 +92,13 @@ class TrailingOrders(ITradingSystem):
 
     @property
     def sell_price(self):
-        sell_price = self.stop_value * ((100 - self.order_placement_perc) / 100)
+        sell_price = self.stop_value * ((100.0 - self.order_placement_perc) / 100)
         return self._get_rounded_value(sell_price)
+
+    @property
+    def stop_loss_price(self):
+        stop_loss_price = self.start_value * ((100.0 - self.stop_loss_trigger) / 100)
+        return self._get_rounded_value(stop_loss_price)
 
     def run(self):
         self.pending_orders = self.client.orders.get_pending_orders(0, 2)
@@ -112,6 +117,14 @@ class TrailingOrders(ITradingSystem):
             consts.OrderSide.BUY: self.evaluate_buying_conditions,
             consts.OrderSide.SELL: self.evaluate_selling_conditions,
         }[self.next_operation]
+
+    def update_start_stop_values_if_necessary(self, last_quote):
+        if self.start_value <= last_quote <= self.stop_value:
+            return
+
+        reference = self.start_value if last_quote < self.start_value else self.stop_value
+        self.start_value = self._get_rounded_value(self.start_value * (last_quote / reference))
+        self.stop_value = self._get_rounded_value(self.stop_value * (last_quote / reference))
 
     def evaluate_pending_orders(self, last_quote):
         # TODO Check if should cancel order
@@ -152,11 +165,13 @@ class TrailingOrders(ITradingSystem):
         print '{time} - {text}'.format(time=curr.strftime('%Y-%m-%d %H:%M:%S'), text=text)
 
     def evaluate_selling_conditions(self, last_quote):
-        # TODO stop loss
-        evaluate_func = self._get_sell_operation_func()
+        evaluate_func = self._get_sell_operation_func(last_quote)
         evaluate_func(last_quote)
 
-    def _get_sell_operation_func(self):
+    def _get_sell_operation_func(self, last_quote):
+        if last_quote < self.stop_loss_price:
+            return self.evaluate_stop_loss
+
         return {
             True: self.evaluate_last_quote_to_sell_bitcoins,
             False: self.evaluate_last_quote_to_start_selling_track,
@@ -167,22 +182,24 @@ class TrailingOrders(ITradingSystem):
             self.log_info('SELLING {quantity} BITCOINS - price: {value}'.format(
                 quantity=self.balance.btc, value=last_quote)
             )
-            self.client.orders.sell_bitcoins(consts.OrderType.LIMITED_ORDER, last_quote, self.balance.btc)
-            self.next_operation = consts.OrderSide.BUY
-            self.is_tracking = False
+            self._sell_bitcoins(last_quote)
+
+    def _sell_bitcoins(self, sell_value):
+        self.client.orders.sell_bitcoins(consts.OrderType.LIMITED_ORDER, sell_value, self.balance.btc)
+        self.next_operation = consts.OrderSide.BUY
+        self.is_tracking = False
 
     def evaluate_last_quote_to_start_selling_track(self, last_quote):
         self.is_tracking = last_quote >= self.stop_value
         if self.is_tracking:
             self.log_info('Tracking values to place a sell order')
 
-    def update_start_stop_values_if_necessary(self, last_quote):
-        if self.start_value <= last_quote <= self.stop_value:
-            return
-
-        reference = self.start_value if last_quote < self.start_value else self.stop_value
-        self.start_value = self._get_rounded_value(self.start_value * (last_quote / reference))
-        self.stop_value = self._get_rounded_value(self.stop_value * (last_quote / reference))
+    def evaluate_stop_loss(self, last_quote):
+        if last_quote <= self.stop_loss_price:
+            self.log_info('STOPPING LOSS {quantity} BITCOINS - price: {value}'.format(
+                quantity=self.balance.btc, value=last_quote)
+            )
+            self._sell_bitcoins(last_quote)
 
 
 if __name__ == '__main__':
