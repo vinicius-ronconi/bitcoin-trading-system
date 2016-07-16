@@ -80,7 +80,7 @@ class BlinkTradeOrdersApi(IOrdersApi):
 
     @staticmethod
     def _get_long_from_dict_or_none(source, key):
-        value = source.get('key')
+        value = source.get(key)
         return long(value) if value else None
 
     def _get_order_status_from_response(self, response):

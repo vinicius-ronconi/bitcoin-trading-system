@@ -1,6 +1,7 @@
 from datetime import datetime
 from trading_system.api import consts
 from trading_system.systems.interfaces import ITradingSystem
+from trading_system.systems.trailing_orders import commands
 
 
 class TrailingOrders(ITradingSystem):
@@ -77,7 +78,7 @@ class TrailingOrders(ITradingSystem):
         print ''
         print 'Please, indicate what should be the first operation to track. 1 = BUY / 2 = SELL'
         print ''
-        return float(raw_input('Insert the first operation side: '))
+        return int(raw_input('Insert the first operation side: '))
 
     @property
     def buy_price(self):
@@ -98,18 +99,18 @@ class TrailingOrders(ITradingSystem):
         self.pending_orders = self.client.orders.get_pending_orders(0, 2)
         self.balance = self.client.account.get_balance()
         current_ticker = self.client.market.get_ticker()
-        evaluate_func = self._get_evaluation_type()
-        evaluate_func(current_ticker.last_value)
+        command = self._get_command()
+        command(self).execute(current_ticker.last_value)
 
         self.update_start_stop_values_if_necessary(current_ticker.last_value)
 
-    def _get_evaluation_type(self):
+    def _get_command(self):
         if self.pending_orders:
-            return self.evaluate_pending_orders
+            return commands.EvaluatePendingOrdersCommand
 
         return {
-            consts.OrderSide.BUY: self.evaluate_buying_conditions,
-            consts.OrderSide.SELL: self.evaluate_selling_conditions,
+            consts.OrderSide.BUY: commands.BuyBitcoinsCommand,
+            consts.OrderSide.SELL: commands.SellBitcoinsCommand,
         }[self.next_operation]
 
     def update_start_stop_values_if_necessary(self, last_quote):
@@ -120,77 +121,11 @@ class TrailingOrders(ITradingSystem):
         self.start_value = self._get_rounded_value(self.start_value * (last_quote / reference))
         self.stop_value = self._get_rounded_value(self.stop_value * (last_quote / reference))
 
-    def evaluate_pending_orders(self, last_quote):
-        # TODO Check if should cancel order
-        # Cancel buying order if last_quote > order price * order_placement_perc
-        # Cancel selling order if last_quote < order price * order_placement_perc
-        pass
-
-    def evaluate_buying_conditions(self, last_quote):
-        evaluate_func = self._get_buy_operation_func()
-        evaluate_func(last_quote)
-
-    def _get_buy_operation_func(self):
-        return {
-            True: self.evaluate_last_quote_to_buy_bitcoins,
-            False: self.evaluate_last_quote_to_start_buying_track,
-        }[self.is_tracking]
-
-    def evaluate_last_quote_to_buy_bitcoins(self, last_quote):
-        if last_quote >= self.buy_price:
-            quantity = self.client.get_satoshi_value(self.balance.currency/last_quote)
-            self.log_info('BUYING {quantity} BITCOINS - price: {value}'.format(quantity=quantity, value=last_quote))
-            self.client.orders.buy_bitcoins(consts.OrderType.LIMITED_ORDER, last_quote, quantity)
-            self.next_operation = consts.OrderSide.SELL
-            self.is_tracking = False
-
     @staticmethod
     def _get_rounded_value(value):
         return round(value, 2)
-
-    def evaluate_last_quote_to_start_buying_track(self, last_quote):
-        self.is_tracking = last_quote <= self.start_value
-        if self.is_tracking:
-            self.log_info('Tracking values to place a buy order')
 
     @staticmethod
     def log_info(text):
         curr = datetime.now()
         print '{time} - {text}'.format(time=curr.strftime('%Y-%m-%d %H:%M:%S'), text=text)
-
-    def evaluate_selling_conditions(self, last_quote):
-        evaluate_func = self._get_sell_operation_func(last_quote)
-        evaluate_func(last_quote)
-
-    def _get_sell_operation_func(self, last_quote):
-        if last_quote < self.stop_loss_price:
-            return self.evaluate_stop_loss
-
-        return {
-            True: self.evaluate_last_quote_to_sell_bitcoins,
-            False: self.evaluate_last_quote_to_start_selling_track,
-        }[self.is_tracking]
-
-    def evaluate_last_quote_to_sell_bitcoins(self, last_quote):
-        if last_quote <= self.sell_price:
-            self.log_info('SELLING {quantity} BITCOINS - price: {value}'.format(
-                quantity=self.balance.btc, value=last_quote)
-            )
-            self._sell_bitcoins(last_quote)
-
-    def _sell_bitcoins(self, sell_value):
-        self.client.orders.sell_bitcoins(consts.OrderType.LIMITED_ORDER, sell_value, self.balance.btc)
-        self.next_operation = consts.OrderSide.BUY
-        self.is_tracking = False
-
-    def evaluate_last_quote_to_start_selling_track(self, last_quote):
-        self.is_tracking = last_quote >= self.stop_value
-        if self.is_tracking:
-            self.log_info('Tracking values to place a sell order')
-
-    def evaluate_stop_loss(self, last_quote):
-        if last_quote <= self.stop_loss_price:
-            self.log_info('STOPPING LOSS {quantity} BITCOINS - price: {value}'.format(
-                quantity=self.balance.btc, value=last_quote)
-            )
-            self._sell_bitcoins(last_quote)

@@ -1,6 +1,7 @@
 NONCE_PRECISION = 1000000  # 6 decimal digits
 SATOSHI_PRECISION = 100000000  # 8 decimal digits
 
+
 class Environment:
     PRODUCTION = 'prod'
     TEST = 'test'
