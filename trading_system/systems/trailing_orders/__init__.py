@@ -1,5 +1,6 @@
 from datetime import datetime
-from trading_system.api import consts
+
+from trading_system import consts
 from trading_system.systems.interfaces import ITradingSystem
 from trading_system.systems.trailing_orders import commands
 

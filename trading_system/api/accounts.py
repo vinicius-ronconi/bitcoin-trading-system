@@ -1,5 +1,5 @@
+from trading_system import consts
 from trading_system.api import beans
-from trading_system.api import consts
 from trading_system.api.interfaces import IAccountApi
 
 

@@ -1,6 +1,8 @@
 from unittest import TestCase
+
 import mock
-from trading_system.api import consts
+
+from trading_system import consts
 from trading_system.api.interfaces import IClient
 from trading_system.systems.trailing_orders import TrailingOrders
 

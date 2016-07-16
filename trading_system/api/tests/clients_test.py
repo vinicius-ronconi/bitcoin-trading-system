@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from trading_system.api import consts
+from trading_system import consts
 from trading_system.api.clients import BlinkTradeClient
 
 
@@ -28,7 +28,7 @@ class EnvironmentTestCase(TestCase):
         satoshi = 123456789
         currency = self.client.get_currency_value(satoshi)
         self.assertIsInstance(currency, float)
-        self.assertEqual(currency, float(satoshi)/consts.SATOSHI_PRECISION)
+        self.assertEqual(currency, float(satoshi) / consts.SATOSHI_PRECISION)
 
     def test_it_returns_none_for_none_satoshi(self):
         satoshi = None

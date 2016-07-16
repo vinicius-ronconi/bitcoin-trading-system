@@ -2,8 +2,8 @@ from unittest import TestCase
 
 import mock
 
+from trading_system import consts
 from trading_system.api import beans
-from trading_system.api import consts
 from trading_system.api import exceptions
 from trading_system.api.orders import BlinkTradeOrdersApi
 

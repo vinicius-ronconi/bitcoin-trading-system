@@ -1,6 +1,8 @@
-import mock
 from unittest import TestCase
-from trading_system.api import consts
+
+import mock
+
+from trading_system import consts
 from trading_system.systems.trailing_orders.commands import SellBitcoinsCommand
 
 

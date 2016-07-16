@@ -1,5 +1,5 @@
+from trading_system import consts
 from trading_system.systems.interfaces import IOrderCommand
-from trading_system.api import consts
 
 
 class BuyBitcoinsCommand(IOrderCommand):

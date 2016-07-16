@@ -1,5 +1,6 @@
 import threading
-from trading_system.api import consts
+
+from trading_system import consts
 from trading_system.api.clients import BlinkTradeClient
 from trading_system.systems.settings import *
 from trading_system.systems.trailing_orders import TrailingOrders
