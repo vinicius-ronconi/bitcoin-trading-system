@@ -1,8 +1,6 @@
 from datetime import datetime
 from trading_system.api import consts
-from trading_system.api.clients import BlinkTradeClient
 from trading_system.systems.interfaces import ITradingSystem
-from trading_system.systems.settings import *
 
 
 class TrailingOrders(ITradingSystem):
@@ -196,8 +194,3 @@ class TrailingOrders(ITradingSystem):
                 quantity=self.balance.btc, value=last_quote)
             )
             self._sell_bitcoins(last_quote)
-
-
-if __name__ == '__main__':
-    system = TrailingOrders()
-    system.run()
