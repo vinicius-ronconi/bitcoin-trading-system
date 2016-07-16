@@ -95,7 +95,6 @@ class TrailingOrders(ITradingSystem):
         return self._get_rounded_value(stop_loss_price)
 
     def run(self):
-        print 'Running....'
         self.pending_orders = self.client.orders.get_pending_orders(0, 2)
         self.balance = self.client.account.get_balance()
         current_ticker = self.client.market.get_ticker()
@@ -118,8 +117,6 @@ class TrailingOrders(ITradingSystem):
             return
 
         reference = self.start_value if last_quote < self.start_value else self.stop_value
-        print '{value} / {type}'.format(value=last_quote, type=type(last_quote))
-        print '{value} / {type}'.format(value=reference, type=type(reference))
         self.start_value = self._get_rounded_value(self.start_value * (last_quote / reference))
         self.stop_value = self._get_rounded_value(self.stop_value * (last_quote / reference))
 
