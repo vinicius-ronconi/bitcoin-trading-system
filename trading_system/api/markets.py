@@ -54,5 +54,4 @@ class BlinkTradeMarketApi(IMarketApi):
             type=requested_info,
             params=params,
         )
-        print url
         return requests.get(url).json()

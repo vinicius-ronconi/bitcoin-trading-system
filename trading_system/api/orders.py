@@ -40,7 +40,6 @@ class BlinkTradeOrdersApi(IOrdersApi):
             raise exceptions.OrderRejectedException('Unable to place the order', response_item)
 
     def _parse_order_response(self, response):
-        print response
         order_list = self._get_orders_from_response(response)
         balance = self._get_balance_from_response(response)
         return order_list + [balance]

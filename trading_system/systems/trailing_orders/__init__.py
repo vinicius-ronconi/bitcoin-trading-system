@@ -42,7 +42,7 @@ class TrailingOrders(ITradingSystem):
         print 'After reaching lowest value and the price raises a order_placement_perc, ' \
               'the buying order will be placed.'
         print ''
-        return raw_input('Insert the value to START BUY: ')
+        return float(raw_input('Insert the value to START BUY: '))
 
     @staticmethod
     def _get_stop_value():
@@ -52,13 +52,13 @@ class TrailingOrders(ITradingSystem):
         print 'After reaching highest value and the price falls an order_placement_perc, ' \
               'the selling order will be placed.'
         print ''
-        return raw_input('Insert the value to START SELL: ')
+        return float(raw_input('Insert the value to START SELL: '))
 
     @staticmethod
     def _get_order_placement_percentage():
         print ''
         print ''
-        return raw_input('Insert the order_placement_perc of gain/loss to place the order: ')
+        return float(raw_input('Insert the order_placement_perc of gain/loss to place the order: '))
 
     @staticmethod
     def _get_stop_loss_trigger():
@@ -69,7 +69,7 @@ class TrailingOrders(ITradingSystem):
         print 'When the price reach this limit, a selling order will be placed'
         print 'Left it empty to skip stop loss setup'
         print ''
-        return raw_input('Insert the percentage to place the stop loss order: ')
+        return float(raw_input('Insert the percentage to place the stop loss order: '))
 
     @staticmethod
     def _get_next_operation():
@@ -77,7 +77,7 @@ class TrailingOrders(ITradingSystem):
         print ''
         print 'Please, indicate what should be the first operation to track. 1 = BUY / 2 = SELL'
         print ''
-        return raw_input('Insert the first operation side: ')
+        return float(raw_input('Insert the first operation side: '))
 
     @property
     def buy_price(self):
@@ -95,6 +95,7 @@ class TrailingOrders(ITradingSystem):
         return self._get_rounded_value(stop_loss_price)
 
     def run(self):
+        print 'Running....'
         self.pending_orders = self.client.orders.get_pending_orders(0, 2)
         self.balance = self.client.account.get_balance()
         current_ticker = self.client.market.get_ticker()
@@ -117,6 +118,8 @@ class TrailingOrders(ITradingSystem):
             return
 
         reference = self.start_value if last_quote < self.start_value else self.stop_value
+        print '{value} / {type}'.format(value=last_quote, type=type(last_quote))
+        print '{value} / {type}'.format(value=reference, type=type(reference))
         self.start_value = self._get_rounded_value(self.start_value * (last_quote / reference))
         self.stop_value = self._get_rounded_value(self.stop_value * (last_quote / reference))
 

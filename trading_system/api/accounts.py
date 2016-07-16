@@ -16,7 +16,6 @@ class BlinkTradeAccountApi(IAccountApi):
             'BalanceReqID': self.client.get_unique_id(),
         }
         response = self.client.send_request(msg)
-        print response
         broker = [broker for broker in response['Responses'] if broker.get(str(self.client.broker))]
         return self._make_balance_from_broker_dict(broker)
 

@@ -1,3 +1,4 @@
+import threading
 from trading_system.api import consts
 from trading_system.api.clients import BlinkTradeClient
 from trading_system.systems.settings import *
@@ -17,6 +18,7 @@ class FoxbitTrailingOrder(object):
 
     def run(self):
         self.system.run()
+        threading.Timer(3, self.run).start()
 
 
 if __name__ == '__main__':
