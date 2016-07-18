@@ -26,9 +26,9 @@ class BuyBitcoinsCommand(IOrderCommand):
         if last_quote >= self.system.buy_price:
             quantity = self.system.client.get_satoshi_value(self.system.balance.currency/last_quote)
             self.system.log_info(
-                'BUYING {quantity} BITCOINS - price: {value}'.format(quantity=quantity, value=last_quote)
+                'BUYING {quantity} BITCOINS - price: {value}'.format(quantity=quantity, value=self.system.buy_price)
             )
-            self.system.client.orders.buy_bitcoins(consts.OrderType.LIMITED_ORDER, last_quote, quantity)
+            self.system.client.orders.buy_bitcoins(consts.OrderType.LIMITED_ORDER, self.system.buy_price, quantity)
             self.system.next_operation = consts.OrderSide.SELL
             self.system.is_tracking = False
 
@@ -64,9 +64,9 @@ class SellBitcoinsCommand(IOrderCommand):
     def _evaluate_last_quote_to_sell_bitcoins(self, last_quote):
         if last_quote <= self.system.sell_price:
             self.system.log_info('SELLING {quantity} BITCOINS - price: {value}'.format(
-                quantity=self.system.balance.btc, value=last_quote)
+                quantity=self.system.balance.btc, value=self.system.sell_price)
             )
-            self._sell_bitcoins(last_quote)
+            self._sell_bitcoins(self.system.sell_price)
 
     def _sell_bitcoins(self, sell_value):
         self.system.client.orders.sell_bitcoins(consts.OrderType.LIMITED_ORDER, sell_value, self.system.balance.btc)
@@ -81,9 +81,9 @@ class SellBitcoinsCommand(IOrderCommand):
     def _evaluate_stop_loss(self, last_quote):
         if last_quote <= self.system.stop_loss_price:
             self.system.log_info('STOPPING LOSS {quantity} BITCOINS - price: {value}'.format(
-                quantity=self.system.balance.btc, value=last_quote)
+                quantity=self.system.balance.btc, value=self.system.sell_price)
             )
-            self._sell_bitcoins(last_quote)
+            self._sell_bitcoins(self.system.sell_price)
 
 
 class EvaluatePendingOrdersCommand(IOrderCommand):
