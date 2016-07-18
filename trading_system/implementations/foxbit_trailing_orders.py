@@ -1,5 +1,5 @@
 import threading
-
+from datetime import datetime
 from trading_system import consts
 from trading_system.api.clients import BlinkTradeClient
 from trading_system.systems.settings import *
@@ -18,7 +18,11 @@ class FoxbitTrailingOrder(object):
         self.system = TrailingOrders(client)
 
     def run(self):
-        self.system.run()
+        try:
+            self.system.run()
+        except Exception, e:
+            curr = datetime.now()
+            print '{time} - {text} - {args}'.format(time=curr.strftime('%Y-%m-%d %H:%M:%S'), text=str(e), args=e.args)
         threading.Timer(3, self.run).start()
 
 
