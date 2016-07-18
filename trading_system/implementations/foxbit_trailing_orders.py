@@ -20,9 +20,9 @@ class FoxbitTrailingOrder(object):
     def run(self):
         try:
             self.system.run()
-        except Exception, e:
+        except Exception as e:
             curr = datetime.now()
-            print '{time} - {text} - {args}'.format(time=curr.strftime('%Y-%m-%d %H:%M:%S'), text=str(e), args=e.args)
+            print('{time} - {text} - {args}'.format(time=curr.strftime('%Y-%m-%d %H:%M:%S'), text=str(e), args=e.args))
         threading.Timer(3, self.run).start()
 
 

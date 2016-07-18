@@ -13,7 +13,7 @@ class Balance(namedtuple('Balance', [
 class OrderInBook(namedtuple('Order', [
     'price',  # float
     'amount',  # float
-    'user_id',  # long
+    'user_id',  # int
 ])):
     pass
 
@@ -27,27 +27,27 @@ class OrderBook(namedtuple('OrderBook', [
 
 
 class PlacedOrder(namedtuple('PlacedOrder', [
-    'order_id',  # long
+    'order_id',  # int
     'time_in_force',  # basestring
-    'exec_id',  # long
+    'exec_id',  # int
     'exec_type',  # basestring
     'order_status',  # basestring
-    'cum_quantity',  # long
-    'price',  # long
+    'cum_quantity',  # int
+    'price',  # int
     'symbol',  # basestring
-    'order_quantity',  # long
-    'last_shares',  # long
-    'last_px',  # long
-    'cxl_quantity',  # long
-    'volume',  # long
-    'leaves_quantity',  # long
+    'order_quantity',  # int
+    'last_shares',  # int
+    'last_px',  # int
+    'cxl_quantity',  # int
+    'volume',  # int
+    'leaves_quantity',  # int
     'message_type',  # basestring
     'exec_side',  # basestring
     'order_type',  # basestring
     'order_rejection_reason',  # basestring
     'side',  # basestring
-    'client_order_id',  # long
-    'average_px',  # long
+    'client_order_id',  # int
+    'average_px',  # int
 ])):
     pass
 
@@ -66,8 +66,8 @@ class Ticker(namedtuple('Ticker', [
 
 
 class Trade(namedtuple('Trades', [
-    'transaction_id',  # long
-    'date',  # long
+    'transaction_id',  # int
+    'date',  # int
     'price',  # float
     'amount',  # float
     'side',  # str

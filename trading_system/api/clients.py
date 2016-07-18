@@ -68,14 +68,16 @@ class BlinkTradeClient(IClient):
     def get_satoshi_value(value):
         if value is None:
             return None
-        return long(value * consts.SATOSHI_PRECISION)
+        return int(value * consts.SATOSHI_PRECISION)
 
     def send_request(self, msg):
         dt = datetime.datetime.now()
         nonce = str(
             int((time.mktime(dt.timetuple()) + dt.microsecond / float(consts.NONCE_PRECISION)) * consts.NONCE_PRECISION)
         )
-        signature = hmac.new(self.secret_key, nonce, digestmod=hashlib.sha256).hexdigest()
+        signature = hmac.new(
+            bytearray(self.secret_key, 'utf-8'), bytearray(nonce, 'utf-8'), digestmod=hashlib.sha256
+        ).hexdigest()
 
         headers = {
             'user-agent': 'blinktrade_tools/0.1',

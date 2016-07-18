@@ -26,9 +26,9 @@ class TrailingOrders(ITradingSystem):
         :type client: trading_system.api.interfaces.IClient
         """
         self.client = client
-        print '---------------------------------------'
-        print '-----  SETUP THE TRAILING ORDERS  -----'
-        print '---------------------------------------'
+        print('---------------------------------------')
+        print('-----  SETUP THE TRAILING ORDERS  -----')
+        print('---------------------------------------')
         self.start_value = self._get_start_value()
         self.stop_value = self._get_stop_value()
         self.order_placement_perc = self._get_order_placement_percentage()
@@ -38,48 +38,48 @@ class TrailingOrders(ITradingSystem):
 
     @staticmethod
     def _get_start_value():
-        print ''
-        print ''
-        print 'START BUY value is the lowest price to start tracking the quote to *** BUY *** bitcoins.'
-        print 'After reaching lowest value and the price raises a order_placement_perc, ' \
-              'the buying order will be placed.'
-        print ''
-        return float(raw_input('Insert the value to START BUY: '))
+        print('')
+        print('')
+        print('START BUY value is the lowest price to start tracking the quote to *** BUY *** bitcoins.')
+        print('After reaching lowest value and the price raises a order_placement_perc, '
+              'the buying order will be placed.')
+        print('')
+        return float(input('Insert the value to START BUY: '))
 
     @staticmethod
     def _get_stop_value():
-        print ''
-        print ''
-        print 'START SELL value is the lowest price to start tracking the quote to *** SELL *** bitcoins.'
-        print 'After reaching highest value and the price falls an order_placement_perc, ' \
-              'the selling order will be placed.'
-        print ''
-        return float(raw_input('Insert the value to START SELL: '))
+        print('')
+        print('')
+        print('START SELL value is the lowest price to start tracking the quote to *** SELL *** bitcoins.')
+        print('After reaching highest value and the price falls an order_placement_perc, '
+              'the selling order will be placed.')
+        print('')
+        return float(input('Insert the value to START SELL: '))
 
     @staticmethod
     def _get_order_placement_percentage():
-        print ''
-        print ''
-        return float(raw_input('Insert the order_placement_perc of gain/loss to place the order: '))
+        print('')
+        print('')
+        return float(input('Insert the order_placement_perc of gain/loss to place the order: '))
 
     @staticmethod
     def _get_stop_loss_trigger():
-        print ''
-        print ''
-        print 'If price continues to fall after the buy operation, it must be a good idea to put a STOP LOSS order ' \
-              'to avoid loss more money.'
-        print 'When the price reach this limit, a selling order will be placed'
-        print 'Left it empty to skip stop loss setup'
-        print ''
-        return float(raw_input('Insert the percentage to place the stop loss order: '))
+        print('')
+        print('')
+        print('If price continues to fall after the buy operation, it must be a good idea to put a STOP LOSS order '
+              'to avoid loss more money.')
+        print('When the price reach this limit, a selling order will be placed')
+        print('Left it empty to skip stop loss setup')
+        print('')
+        return float(input('Insert the percentage to place the stop loss order: '))
 
     @staticmethod
     def _get_next_operation():
-        print ''
-        print ''
-        print 'Please, indicate what should be the first operation to track. 1 = BUY / 2 = SELL'
-        print ''
-        return int(raw_input('Insert the first operation side: '))
+        print('')
+        print('')
+        print('Please, indicate what should be the first operation to track. 1 = BUY / 2 = SELL')
+        print('')
+        return int(input('Insert the first operation side: '))
 
     @property
     def buy_price(self):
@@ -129,4 +129,4 @@ class TrailingOrders(ITradingSystem):
     @staticmethod
     def log_info(text):
         curr = datetime.now()
-        print '{time} - {text}'.format(time=curr.strftime('%Y-%m-%d %H:%M:%S'), text=text)
+        print('{time} - {text}'.format(time=curr.strftime('%Y-%m-%d %H:%M:%S'), text=text))

@@ -56,33 +56,33 @@ class BlinkTradeOrdersApi(IOrdersApi):
 
     def _make_placed_order_from_dict(self, order):
         return beans.PlacedOrder(
-            order_id=self._get_long_from_dict_or_none(order, 'OrderID'),
+            order_id=self._get_int_value_from_dict_or_none(order, 'OrderID'),
             time_in_force=str(order.get('TimeInForce')),
-            exec_id=self._get_long_from_dict_or_none(order, 'ExecID'),
+            exec_id=self._get_int_value_from_dict_or_none(order, 'ExecID'),
             exec_type=str(order.get('ExecType')),
             order_status=str(order.get('OrdStatus')),
-            cum_quantity=self._get_long_from_dict_or_none(order, 'CumQty'),
-            price=self._get_long_from_dict_or_none(order, 'Price'),
+            cum_quantity=self._get_int_value_from_dict_or_none(order, 'CumQty'),
+            price=self._get_int_value_from_dict_or_none(order, 'Price'),
             symbol=str(order.get('Symbol')),
-            order_quantity=self._get_long_from_dict_or_none(order, 'OrderQty'),
-            last_shares=self._get_long_from_dict_or_none(order, 'LastShares'),
-            last_px=self._get_long_from_dict_or_none(order, 'LastPx'),
-            cxl_quantity=self._get_long_from_dict_or_none(order, 'CxlQty'),
-            volume=self._get_long_from_dict_or_none(order, 'Volume'),
-            leaves_quantity=self._get_long_from_dict_or_none(order, 'LeavesQty'),
+            order_quantity=self._get_int_value_from_dict_or_none(order, 'OrderQty'),
+            last_shares=self._get_int_value_from_dict_or_none(order, 'LastShares'),
+            last_px=self._get_int_value_from_dict_or_none(order, 'LastPx'),
+            cxl_quantity=self._get_int_value_from_dict_or_none(order, 'CxlQty'),
+            volume=self._get_int_value_from_dict_or_none(order, 'Volume'),
+            leaves_quantity=self._get_int_value_from_dict_or_none(order, 'LeavesQty'),
             message_type=str(order.get('MsgType')),
             exec_side=str(order.get('ExecSide')),
             order_type=str(order.get('OrdType')),
             order_rejection_reason=str(order.get('OrdRejReason')),
             side=str(order.get('Side')),
-            client_order_id=self._get_long_from_dict_or_none(order, 'ClOrdID'),
-            average_px=self._get_long_from_dict_or_none(order, 'AvgPx'),
+            client_order_id=self._get_int_value_from_dict_or_none(order, 'ClOrdID'),
+            average_px=self._get_int_value_from_dict_or_none(order, 'AvgPx'),
         )
 
     @staticmethod
-    def _get_long_from_dict_or_none(source, key):
+    def _get_int_value_from_dict_or_none(source, key):
         value = source.get(key)
-        return long(value) if value else None
+        return int(value) if value else None
 
     def _get_order_status_from_response(self, response):
         responses = [r for r in response['Responses'] if r['MsgType'] == consts.MessageType.ORDER_STATUS_RESPONSE]

@@ -22,22 +22,22 @@ class ManualTradingSystem(object):
         ticker = self.client.market.get_ticker()
         valid_bid_price = ticker.last_value * (100.0 - valid_percentage)/100
         valid_ask_price = ticker.last_value * (100.0 + valid_percentage)/100
-        print 'last value = {}'.format(ticker.last_value)
-        print 'valid bid = {}'.format(valid_bid_price)
-        print 'valid ask = {}'.format(valid_ask_price)
+        print('last value = {}'.format(ticker.last_value))
+        print('valid bid = {}'.format(valid_bid_price))
+        print('valid ask = {}'.format(valid_ask_price))
 
         valid_bids = [bid for bid in order_book.bids if bid.price >= valid_bid_price]
         grouped_bids = self._group_list_by_user(valid_bids)
         valid_asks = [ask for ask in order_book.asks if ask.price <= valid_ask_price]
         grouped_asks = self._group_list_by_user(valid_asks)
-        print '{quantity} bidders - Amount: {amount}'.format(
+        print('{quantity} bidders - Amount: {amount}'.format(
             quantity=len(grouped_bids), amount=self._get_total_amount(grouped_bids)
-        )
-        print '{quantity} askers - Amount: {amount}'.format(
+        ))
+        print('{quantity} askers - Amount: {amount}'.format(
             quantity=len(grouped_asks), amount=self._get_total_amount(grouped_asks)
-        )
-        print grouped_bids
-        print grouped_asks
+        ))
+        print(grouped_bids)
+        print(grouped_asks)
 
     @staticmethod
     def _group_list_by_user(order_list):

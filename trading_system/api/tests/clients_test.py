@@ -38,8 +38,8 @@ class EnvironmentTestCase(TestCase):
     def test_it_converts_currency_to_satoshi(self):
         value = 1234
         satoshi = self.client.get_satoshi_value(value)
-        self.assertIsInstance(satoshi, long)
-        self.assertEqual(satoshi, long(value * consts.SATOSHI_PRECISION))
+        self.assertIsInstance(satoshi, int)
+        self.assertEqual(satoshi, int(value * consts.SATOSHI_PRECISION))
 
     def test_it_returns_none_for_none_value(self):
         value = None

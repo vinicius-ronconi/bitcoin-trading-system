@@ -40,8 +40,8 @@ class BlinkTradeMarketApi(IMarketApi):
             consts.MarketInformation.TRADES, params='?since={offset}'.format(offset=int(time.time()) - offset),
         )
         return [beans.Trade(
-            transaction_id=long(item.get('tid')),
-            date=long(item.get('date')),
+            transaction_id=int(item.get('tid')),
+            date=int(item.get('date')),
             price=float(item.get('price')),
             amount=float(item.get('amount')),
             side=str(item.get('side')),
