@@ -35,6 +35,15 @@ class TrailingOrders(ITradingSystem):
         self.stop_loss_trigger = self._get_stop_loss_trigger()
         self.next_operation = self._get_next_operation()
         self.is_tracking = False
+        print('System started with the following values:')
+        print('    - Start value: {}'.format(self.start_value))
+        print('    - Stop value: {}'.format(self.stop_value))
+        print('    - Order Placement %: {}'.format(self.order_placement_perc))
+        print('    - Stop Loss %: {}'.format(self.stop_loss_trigger))
+        print('    - Next Operation: {}'.format(self.next_operation))
+        print('    - Buy Price: {}'.format(self.buy_price))
+        print('    - Sell Price: {}'.format(self.sell_price))
+        print('    - Stop Loss Price: {}'.format(self.stop_loss_price))
 
     @staticmethod
     def _get_start_value():

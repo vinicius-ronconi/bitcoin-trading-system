@@ -35,7 +35,12 @@ class BuyBitcoinsCommand(IOrderCommand):
     def _evaluate_last_quote_to_start_buying_track(self, last_quote):
         self.system.is_tracking = last_quote <= self.system.start_value
         if self.system.is_tracking:
-            self.system.log_info('Tracking values to place a buy order')
+            self.system.log_info(
+                'Tracking values to place a BUY order after quote become lower than {start}. '
+                'Last quote was {last} and will but an order after price become higher than {buy_price}'.format(
+                    start=self.system.start_value, last=last_quote, buy_price=self.system.buy_price,
+                )
+            )
 
 
 class SellBitcoinsCommand(IOrderCommand):
@@ -76,14 +81,19 @@ class SellBitcoinsCommand(IOrderCommand):
     def _evaluate_last_quote_to_start_selling_track(self, last_quote):
         self.system.is_tracking = last_quote >= self.system.stop_value
         if self.system.is_tracking:
-            self.system.log_info('Tracking values to place a sell order')
+            self.system.log_info(
+                'Tracking values to place a SELL order after quote become lower than {stop}. '
+                'Last quote was {last} and will but an order after price become lower than {sell_price}'.format(
+                    stop=self.system.stop_value, last=last_quote, sell_price=self.system.sell_price)
+
+            )
 
     def _evaluate_stop_loss(self, last_quote):
         if last_quote <= self.system.stop_loss_price:
             self.system.log_info('STOPPING LOSS {quantity} BITCOINS - price: {value}'.format(
-                quantity=self.system.balance.btc, value=self.system.sell_price)
+                quantity=self.system.balance.btc, value=self.system.stop_loss_price)
             )
-            self._sell_bitcoins(self.system.sell_price)
+            self._sell_bitcoins(self.system.stop_loss_price)
 
 
 class EvaluatePendingOrdersCommand(IOrderCommand):
