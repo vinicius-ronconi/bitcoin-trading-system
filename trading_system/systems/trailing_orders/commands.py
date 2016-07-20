@@ -13,7 +13,6 @@ class BuyBitcoinsCommand(IOrderCommand):
         """
         :type last_quote: float
         """
-        print('Execute BUY Command {} / {}'.format(last_quote, self.system.start_value))
         evaluate_func = self._get_buy_operation_func()
         evaluate_func(last_quote)
 
@@ -34,7 +33,6 @@ class BuyBitcoinsCommand(IOrderCommand):
             self.system.is_tracking = False
 
     def _evaluate_last_quote_to_start_buying_track(self, last_quote):
-        print('evaluate last quote to start buying track {} / {}'.format(last_quote, self.system.start_value))
         self.system.is_tracking = (last_quote <= self.system.start_value)
         if self.system.is_tracking:
             self.system.log_info(
@@ -56,7 +54,6 @@ class SellBitcoinsCommand(IOrderCommand):
         """
         :type last_quote: float
         """
-        print('Execute SELL Command {} / {}'.format(last_quote, self.system.stop_value))
         evaluate_func = self._get_sell_operation_func(last_quote)
         evaluate_func(last_quote)
 
@@ -113,5 +110,4 @@ class EvaluatePendingOrdersCommand(IOrderCommand):
         # TODO Check if should cancel order
         # Cancel buying order if last_quote > order price * order_placement_perc
         # Cancel selling order if last_quote < order price * order_placement_perc
-        print('Execute PENDING Command {} / {}'.format(last_quote, self.system.start_value))
         pass
