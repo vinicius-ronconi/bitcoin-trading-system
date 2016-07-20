@@ -44,6 +44,8 @@ class TrailingOrders(ITradingSystem):
         print('    - Buy Price: {}'.format(self.buy_price))
         print('    - Sell Price: {}'.format(self.sell_price))
         print('    - Stop Loss Price: {}'.format(self.stop_loss_price))
+        print('')
+        print('    - Gross Margin: {}'.format(((self.sell_price / self.buy_price) -1) * 100))
 
     @staticmethod
     def _get_start_value():
