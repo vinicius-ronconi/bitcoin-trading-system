@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from trading_system import consts
-from trading_system.api.clients import BlinkTradeClient
+from trading_system.api.blinktrade.clients import BlinkTradeClient
 
 
 class EnvironmentTestCase(TestCase):

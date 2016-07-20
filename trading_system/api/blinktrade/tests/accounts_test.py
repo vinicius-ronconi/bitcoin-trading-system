@@ -4,7 +4,7 @@ import mock
 
 from trading_system import consts
 from trading_system.api import beans
-from trading_system.api.accounts import BlinkTradeAccountApi
+from trading_system.api.blinktrade.accounts import BlinkTradeAccountApi
 
 
 class AccountsTestCase(TestCase):

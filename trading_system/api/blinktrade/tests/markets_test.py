@@ -4,7 +4,7 @@ import mock
 
 from trading_system import consts
 from trading_system.api import beans
-from trading_system.api.markets import BlinkTradeMarketApi
+from trading_system.api.blinktrade.markets import BlinkTradeMarketApi
 
 
 class BlinkTradeOrdersApiTestCase(TestCase):
@@ -19,7 +19,7 @@ class BlinkTradeOrdersApiTestCase(TestCase):
 
         self.market_api = BlinkTradeMarketApi(self.client)
 
-    @mock.patch('trading_system.api.markets.BlinkTradeMarketApi._get_market_data', mock.Mock(return_value={
+    @mock.patch('trading_system.api.blinktrade.markets.BlinkTradeMarketApi._get_market_data', mock.Mock(return_value={
         'high': 2299.9,
         'vol': 305.59416915,
         'buy': 2279.8,
@@ -33,7 +33,7 @@ class BlinkTradeOrdersApiTestCase(TestCase):
         ticker = self.market_api.get_ticker()
         self.assertIsInstance(ticker, beans.Ticker)
 
-    @mock.patch('trading_system.api.markets.BlinkTradeMarketApi._get_market_data', mock.Mock(return_value={
+    @mock.patch('trading_system.api.blinktrade.markets.BlinkTradeMarketApi._get_market_data', mock.Mock(return_value={
         'pair': 'BTCBRL',
         'bids': [[2279.9, 0.04213685, 90800428], [2279.89, 0.17024064, 90844402], [2279.87, 1.36183334, 90800428]],
         'asks': [[2295.98, 0.24452091, 90840688], [2296.16, 1.2047416, 90803493], [2296.4, 2.0, 90840688]],
@@ -42,7 +42,7 @@ class BlinkTradeOrdersApiTestCase(TestCase):
         order_book = self.market_api.get_order_book()
         self.assertIsInstance(order_book, beans.OrderBook)
 
-    @mock.patch('trading_system.api.markets.BlinkTradeMarketApi._get_market_data', mock.Mock(return_value=[
+    @mock.patch('trading_system.api.blinktrade.markets.BlinkTradeMarketApi._get_market_data', mock.Mock(return_value=[
         {"tid": 390596, "date": 1467037014, "price": 2300.0, "amount": 0.02847873, "side": "sell"},
         {"tid": 390601, "date": 1467037288, "price": 2302.65, "amount": 1.998, "side": "sell"},
         {"tid": 390603, "date": 1467037349, "price": 2302.65, "amount": 0.91031505, "side": "sell"},

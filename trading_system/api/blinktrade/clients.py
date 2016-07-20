@@ -6,11 +6,7 @@ import time
 import requests
 
 from trading_system import consts
-from trading_system.api import (
-    accounts,
-    markets,
-    orders,
-)
+from trading_system.api.blinktrade import accounts, markets, orders
 from trading_system.api.interfaces import IClient
 
 
