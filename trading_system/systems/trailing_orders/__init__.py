@@ -45,7 +45,7 @@ class TrailingOrders(ITradingSystem):
         print('    - Sell Price: {}'.format(self.sell_price))
         print('    - Stop Loss Price: {}'.format(self.stop_loss_price))
         print('')
-        print('    - Gross Margin: {}'.format(((self.sell_price / self.buy_price) -1) * 100))
+        print('    - Gross Margin: {}'.format(((self.sell_price / self.buy_price) - 1) * 100))
 
     @staticmethod
     def _get_start_value():
@@ -90,7 +90,7 @@ class TrailingOrders(ITradingSystem):
         print('')
         print('Please, indicate what should be the first operation to track. 1 = BUY / 2 = SELL')
         print('')
-        return int(input('Insert the first operation side: '))
+        return input('Insert the first operation side: ')
 
     @property
     def buy_price(self):
@@ -117,7 +117,7 @@ class TrailingOrders(ITradingSystem):
         self.update_start_stop_values_if_necessary(current_ticker.last_value)
 
     def _get_command(self):
-        if self.pending_orders:
+        if self.pending_orders[0] is not None:
             return commands.EvaluatePendingOrdersCommand
 
         return {

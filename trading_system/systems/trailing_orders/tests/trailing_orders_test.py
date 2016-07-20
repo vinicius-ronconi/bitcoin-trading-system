@@ -45,7 +45,7 @@ class TrailingOrdersTestCase(TestCase):
     @mock.patch('trading_system.systems.trailing_orders.commands.BuyBitcoinsCommand.execute')
     def test_it_calls_buy_command(self, command):
         self.system.next_operation = consts.OrderSide.BUY
-        self.system.client.orders.get_pending_orders.return_value = []
+        self.system.client.orders.get_pending_orders.return_value = [None]
         self.system.update_start_stop_values_if_necessary = mock.Mock()
         self.system.run()
         self.assertEqual(command.call_count, 1)
@@ -53,7 +53,7 @@ class TrailingOrdersTestCase(TestCase):
     @mock.patch('trading_system.systems.trailing_orders.commands.SellBitcoinsCommand.execute')
     def test_it_calls_sell_command(self, command):
         self.system.next_operation = consts.OrderSide.SELL
-        self.system.client.orders.get_pending_orders.return_value = []
+        self.system.client.orders.get_pending_orders.return_value = [None]
         self.system.update_start_stop_values_if_necessary = mock.Mock()
         self.system.run()
         self.assertEqual(command.call_count, 1)
