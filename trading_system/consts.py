@@ -34,12 +34,12 @@ CURRENCY_TO_PAIR_MAP = {
 
 
 class Broker:
-    SURBITCOIN = 1
-    VBTC = 3
-    FOXBIT = 4
-    TESTNET = 5
-    URDUBIT = 8
-    CHILEBIT = 9
+    SURBITCOIN = '1'
+    VBTC = '3'
+    FOXBIT = '4'
+    TESTNET = '5'
+    URDUBIT = '8'
+    CHILEBIT = '9'
 
 BROKERS_CHOICES = {
     Broker.SURBITCOIN,

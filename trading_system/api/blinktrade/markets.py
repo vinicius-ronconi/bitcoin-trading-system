@@ -10,7 +10,7 @@ from trading_system.api.interfaces import IMarketApi
 class BlinkTradeMarketApi(IMarketApi):
     def __init__(self, client):
         """
-        :type client: trading_system.api.clients.BlinkTradeClient
+        :type client: trading_system.api.blinktrade.clients.BlinkTradeClient
         """
         self.client = client
 

@@ -6,7 +6,7 @@ from trading_system.api.interfaces import IAccountApi
 class BlinkTradeAccountApi(IAccountApi):
     def __init__(self, client):
         """
-        :type client: trading_system.api.clients.BlinkTradeClient
+        :type client: trading_system.api.blinktrade.clients.BlinkTradeClient
         """
         self.client = client
 
@@ -16,7 +16,7 @@ class BlinkTradeAccountApi(IAccountApi):
             'BalanceReqID': self.client.get_unique_id(),
         }
         response = self.client.send_request(msg)
-        broker = [broker for broker in response['Responses'] if broker.get(str(self.client.broker))]
+        broker = [broker[self.client.broker] for broker in response['Responses'] if broker.get(str(self.client.broker))]
         return self._make_balance_from_broker_dict(broker)
 
     def _make_balance_from_broker_dict(self, broker):
