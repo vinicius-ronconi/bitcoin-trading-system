@@ -126,7 +126,9 @@ class TrailingOrders(ITradingSystem):
         }[self.next_operation]
 
     def update_start_stop_values_if_necessary(self, last_quote):
-        if self.start_value <= last_quote <= self.stop_value:
+        if self.next_operation == consts.OrderSide.BUY and last_quote >= self.start_value:
+            return
+        if self.next_operation == consts.OrderSide.SELL and last_quote <= self.stop_value:
             return
 
         reference = self.start_value if last_quote < self.start_value else self.stop_value

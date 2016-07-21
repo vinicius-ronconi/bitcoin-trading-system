@@ -24,6 +24,7 @@ class TrailingOrdersTestCase(TestCase):
 
     def test_it_update_start_stop_values_if_necessary(self):
         last_quote = self.START_VALUE / 2
+        self.system.next_operation = consts.OrderSide.BUY
         self.system.update_start_stop_values_if_necessary(last_quote)
         self.assertEqual(self.system.start_value, last_quote)
         self.assertEqual(self.system.stop_value, self.STOP_VALUE * (last_quote/self.START_VALUE))
@@ -31,6 +32,7 @@ class TrailingOrdersTestCase(TestCase):
         self.system.start_value = self.START_VALUE
         self.system.stop_value = self.STOP_VALUE
         last_quote = self.STOP_VALUE * 2
+        self.system.next_operation = consts.OrderSide.SELL
         self.system.update_start_stop_values_if_necessary(last_quote)
         self.assertEqual(self.system.start_value, self.START_VALUE * 2)
         self.assertEqual(self.system.stop_value, last_quote)
@@ -38,6 +40,22 @@ class TrailingOrdersTestCase(TestCase):
         self.system.start_value = self.START_VALUE
         self.system.stop_value = self.STOP_VALUE
         last_quote = (self.START_VALUE + self.STOP_VALUE) / 2
+        self.system.update_start_stop_values_if_necessary(last_quote)
+        self.assertEqual(self.system.start_value, self.START_VALUE)
+        self.assertEqual(self.system.stop_value, self.STOP_VALUE)
+
+        self.system.start_value = self.START_VALUE
+        self.system.stop_value = self.STOP_VALUE
+        last_quote = self.STOP_VALUE * 2
+        self.system.next_operation = consts.OrderSide.BUY
+        self.system.update_start_stop_values_if_necessary(last_quote)
+        self.assertEqual(self.system.start_value, self.START_VALUE)
+        self.assertEqual(self.system.stop_value, self.STOP_VALUE)
+
+        self.system.start_value = self.START_VALUE
+        self.system.stop_value = self.STOP_VALUE
+        last_quote = self.START_VALUE / 2
+        self.system.next_operation = consts.OrderSide.SELL
         self.system.update_start_stop_values_if_necessary(last_quote)
         self.assertEqual(self.system.start_value, self.START_VALUE)
         self.assertEqual(self.system.stop_value, self.STOP_VALUE)
