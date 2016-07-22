@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from math import floor
 from trading_system import consts
 from trading_system.systems.interfaces import ITradingSystem
 from trading_system.systems.trailing_orders import commands
@@ -134,10 +134,16 @@ class TrailingOrders(ITradingSystem):
         reference = self.start_value if last_quote < self.start_value else self.stop_value
         self.start_value = self._get_rounded_value(self.start_value * (last_quote / reference))
         self.stop_value = self._get_rounded_value(self.stop_value * (last_quote / reference))
+        self.log_info('Adjusting START and STOP values after last_quote = {}.'.format(last_quote))
+        self.log_info('    . New start value is {}.'.format(self.start_value))
+        self.log_info('    . New stop value is {}.'.format(self.stop_value))
+        self.log_info('    . New buy price is {}.'.format(self.buy_price))
+        self.log_info('    . New sell price is {}.'.format(self.sell_price))
+        self.log_info('    . New stop loss price is {}.'.format(self.stop_loss_price))
 
     @staticmethod
     def _get_rounded_value(value):
-        return round(value, 2)
+        return floor(value*100)/100
 
     @staticmethod
     def log_info(text):
