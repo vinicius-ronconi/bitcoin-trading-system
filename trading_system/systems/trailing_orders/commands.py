@@ -72,11 +72,11 @@ class SellBitcoinsCommand(IOrderCommand):
                 quantity=self.system.balance.btc, value=self.system.sell_price)
             )
             self._sell_bitcoins(self.system.sell_price)
+            self.system.is_tracking = False
 
     def _sell_bitcoins(self, sell_value):
         self.system.client.orders.sell_bitcoins(consts.OrderType.LIMITED_ORDER, sell_value, self.system.balance.btc)
         self.system.next_operation = consts.OrderSide.BUY
-        self.system.is_tracking = False
 
     def _evaluate_last_quote_to_start_selling_track(self, last_quote):
         self.system.is_tracking = last_quote >= self.system.stop_value
@@ -94,6 +94,7 @@ class SellBitcoinsCommand(IOrderCommand):
                 quantity=self.system.balance.btc, value=self.system.stop_loss_price)
             )
             self._sell_bitcoins(self.system.stop_loss_price)
+            self.system.is_tracking = True
 
 
 class EvaluatePendingOrdersCommand(IOrderCommand):
