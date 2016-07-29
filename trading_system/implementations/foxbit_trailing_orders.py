@@ -7,6 +7,7 @@ from trading_system.systems.trailing_orders import TrailingOrders
 
 class FoxbitTrailingOrder(object):
     def __init__(self):
+        # TODO Create abstract factory
         client = BlinkTradeClient(
             consts.Environment.PRODUCTION,
             consts.Currency.BRAZILIAN_REAIS,

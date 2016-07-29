@@ -29,16 +29,16 @@ class BuyBitcoinsCommand(IOrderCommand):
                 'BUYING {quantity} BITCOINS - price: {value}'.format(quantity=quantity, value=self.system.buy_price)
             )
             self.system.client.orders.buy_bitcoins(consts.OrderType.LIMITED_ORDER, self.system.buy_price, quantity)
-            self.system.next_operation = consts.OrderSide.SELL
+            self.system.setup.next_operation = consts.OrderSide.SELL
             self.system.is_tracking = False
 
     def _evaluate_last_quote_to_start_buying_track(self, last_quote):
-        self.system.is_tracking = (last_quote <= self.system.start_value)
+        self.system.is_tracking = (last_quote <= self.system.setup.start_value)
         if self.system.is_tracking:
             self.system.log_info(
                 'Tracking values to place a BUY order after quote become lower than {start}. '
                 'Last quote was {last} and will but an order after price become higher than {buy_price}'.format(
-                    start=self.system.start_value, last=last_quote, buy_price=self.system.buy_price,
+                    start=self.system.setup.start_value, last=last_quote, buy_price=self.system.buy_price,
                 )
             )
 
@@ -76,15 +76,15 @@ class SellBitcoinsCommand(IOrderCommand):
 
     def _sell_bitcoins(self, sell_value):
         self.system.client.orders.sell_bitcoins(consts.OrderType.LIMITED_ORDER, sell_value, self.system.balance.btc)
-        self.system.next_operation = consts.OrderSide.BUY
+        self.system.setup.next_operation = consts.OrderSide.BUY
 
     def _evaluate_last_quote_to_start_selling_track(self, last_quote):
-        self.system.is_tracking = last_quote >= self.system.stop_value
+        self.system.is_tracking = last_quote >= self.system.setup.stop_value
         if self.system.is_tracking:
             self.system.log_info(
                 'Tracking values to place a SELL order after quote become lower than {stop}. '
                 'Last quote was {last} and will but an order after price become lower than {sell_price}'.format(
-                    stop=self.system.stop_value, last=last_quote, sell_price=self.system.sell_price)
+                    stop=self.system.setup.stop_value, last=last_quote, sell_price=self.system.sell_price)
 
             )
 

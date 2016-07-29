@@ -43,7 +43,7 @@ class BlinkTradeOrdersApi(IOrdersApi):
     def _parse_order_response(self, response):
         order_list = self._get_orders_from_response(response)
         balance = self._get_balance_from_response(response)
-        return order_list + [balance]
+        return order_list + [balance] if balance else order_list
 
     def _get_orders_from_response(self, response):
         placed_orders_list = self._get_placed_order_from_response(response)
