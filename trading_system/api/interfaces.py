@@ -25,7 +25,7 @@ class IClient(object):
 
     @staticmethod
     @abstractmethod
-    def get_currency_value(satoshi):
+    def get_decimal_value(satoshi):
         """
         :type satoshi: int
         :rtype: float
@@ -92,14 +92,6 @@ class IOrdersApi(object):
 
     @abstractmethod
     def get_pending_orders(self, page, page_size):
-        """
-        :type page: int
-        :type page_size: int
-        :rtype: list[trading_system.api.beans.PlacedOrder]
-        """
-
-    @abstractmethod
-    def get_executed_orders(self, page, page_size):
         """
         :type page: int
         :type page_size: int

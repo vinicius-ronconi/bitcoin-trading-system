@@ -1,3 +1,4 @@
+bitfinex==0.2.6
 coverage==4.1
 mock==2.0.0
 requests==2.10.0

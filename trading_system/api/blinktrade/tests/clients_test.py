@@ -16,6 +16,9 @@ class EnvironmentTestCase(TestCase):
         self.assertFalse('testnet' in self.client.environment_server)
         self.assertEqual(self.client.currency, self.currency)
         self.assertEqual(self.client.broker, self.broker)
+        self.assertIsNotNone(self.client.account)
+        self.assertIsNotNone(self.client.market)
+        self.assertIsNotNone(self.client.orders)
 
     def test_it_defaults_to_brazilian_test_environment(self):
         client = BlinkTradeClient('invalid type', 'invalid currency', 'invalid broker', 'my_key', 'secret_key')
@@ -26,13 +29,13 @@ class EnvironmentTestCase(TestCase):
 
     def test_it_converts_satoshi_to_currency(self):
         satoshi = 123456789
-        currency = self.client.get_currency_value(satoshi)
+        currency = self.client.get_decimal_value(satoshi)
         self.assertIsInstance(currency, float)
         self.assertEqual(currency, float(satoshi) / consts.SATOSHI_PRECISION)
 
     def test_it_returns_none_for_none_satoshi(self):
         satoshi = None
-        currency = self.client.get_currency_value(satoshi)
+        currency = self.client.get_decimal_value(satoshi)
         self.assertIsNone(currency)
 
     def test_it_converts_currency_to_satoshi(self):

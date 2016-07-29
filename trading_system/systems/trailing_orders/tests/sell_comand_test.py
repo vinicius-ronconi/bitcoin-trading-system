@@ -55,7 +55,7 @@ class TrailingOrdersTestCase(TestCase):
         self.command.system.stop_value = 1000.0
         self.command.system.stop_loss_price = 500.0
         self.command.execute(self.command.system.stop_loss_price - 0.01)
-        self._assert_results(buy_call_count=0, sell_call_count=1, order_side=consts.OrderSide.BUY, is_tracking=False)
+        self._assert_results(buy_call_count=0, sell_call_count=1, order_side=consts.OrderSide.BUY, is_tracking=True)
 
     def test_it_does_not_stop_loss_when_not_tracking(self):
         self.command.system.is_tracking = False

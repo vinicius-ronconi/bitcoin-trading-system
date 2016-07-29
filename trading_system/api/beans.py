@@ -27,27 +27,17 @@ class OrderBook(namedtuple('OrderBook', [
 
 
 class PlacedOrder(namedtuple('PlacedOrder', [
-    'order_id',  # int
-    'time_in_force',  # basestring
-    'exec_id',  # int
-    'exec_type',  # basestring
+    'order_id',  # [basestring|None]
+    'exec_id',  # [basestring|None]
+    'exec_type',  # [basestring|None]
     'order_status',  # basestring
-    'cum_quantity',  # int
-    'price',  # int
+    'price',  # float
     'symbol',  # basestring
-    'order_quantity',  # int
-    'last_shares',  # int
-    'last_px',  # int
-    'cxl_quantity',  # int
-    'volume',  # int
-    'leaves_quantity',  # int
-    'message_type',  # basestring
-    'exec_side',  # basestring
-    'order_type',  # basestring
-    'order_rejection_reason',  # basestring
+    'amount',  # float
+    'message_type',  # [basestring|None]
+    'order_rejection_reason',  # [basestring|None]
     'side',  # basestring
-    'client_order_id',  # int
-    'average_px',  # int
+    'client_order_id',  # basestring
 ])):
     pass
 

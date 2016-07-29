@@ -55,7 +55,7 @@ class BlinkTradeClient(IClient):
         return int(time.time())
 
     @staticmethod
-    def get_currency_value(satoshi):
+    def get_decimal_value(satoshi):
         if satoshi is None:
             return None
         return float(satoshi) / consts.SATOSHI_PRECISION

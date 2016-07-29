@@ -11,8 +11,12 @@ class ManualTradingSystem(object):
             BITFINEX_KEY, BITFINEX_SECRET,
         )
 
-    def get_balance(self):
-        return self.client.account.get_balance()
+    def get_pending_orders(self, page, page_size):
+        return self.client.orders.get_pending_orders(page, page_size)
+
+    def get_past_orders(self, page, page_size):
+        return self.client.orders.get_executed_orders(page, page_size)
 
 if __name__ == '__main__':
-    print(ManualTradingSystem().get_balance())
+    print(ManualTradingSystem().get_pending_orders(1, 10))
+    print(ManualTradingSystem().get_past_orders(1, 10))

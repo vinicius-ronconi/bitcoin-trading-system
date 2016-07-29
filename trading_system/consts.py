@@ -10,6 +10,7 @@ ENVIRONMENTS_CHOICES = {Environment.PRODUCTION, Environment.TEST}
 
 
 class Currency:
+    AMERICAN_DOLAR = 'USD'
     BRAZILIAN_REAIS = 'BRL'
     CHILEAN_PESOS = 'CLP'
     PAKISTANI_RUPPE = 'PKR'
@@ -22,14 +23,6 @@ CURRENCIES_CHOICES = {
     Currency.PAKISTANI_RUPPE,
     Currency.VENEZUELAN_BOLIVARES,
     Currency.VIETNAMISE_DONGS,
-}
-
-CURRENCY_TO_PAIR_MAP = {
-    Currency.BRAZILIAN_REAIS: 'BTCBRL',
-    Currency.CHILEAN_PESOS: 'BTCCLP',
-    Currency.PAKISTANI_RUPPE: 'BTCPKR',
-    Currency.VENEZUELAN_BOLIVARES: 'BTCVEF',
-    Currency.VIETNAMISE_DONGS: 'BTCVND',
 }
 
 
@@ -62,6 +55,11 @@ MARKET_DATA_TYPE_CHOICES = {MarketInformation.TICKER, MarketInformation.ORDER_BO
 class OrderSide:
     BUY = '1'
     SELL = '2'
+
+ORDER_SIDE_TO_TEXT_MAP = {
+    OrderSide.BUY: 'buy',
+    OrderSide.SELL: 'sell',
+}
 
 ORDER_SIDE_CHOICES = {OrderSide.BUY, OrderSide.SELL}
 
@@ -119,4 +117,22 @@ class OrderRejectedReason:
 
 ORDER_REJECTED_REASON_CHOICES = {
     OrderRejectedReason.VALUE_TOO_SMALL
+}
+
+
+class Symbol:
+    BTCUSD = 'BTCUSD'
+    BTCBRL = 'BTCBRL'
+    BTCCLP = 'BTCCLP'
+    BTCPKR = 'BTCPKR'
+    BTCVEF = 'BTCVEF'
+    BTCVND = 'BTCVND'
+
+CURRENCY_TO_SYMBOL_MAP = {
+    Currency.AMERICAN_DOLAR: Symbol.BTCUSD,
+    Currency.BRAZILIAN_REAIS: Symbol.BTCBRL,
+    Currency.CHILEAN_PESOS: Symbol.BTCCLP,
+    Currency.PAKISTANI_RUPPE: Symbol.BTCPKR,
+    Currency.VENEZUELAN_BOLIVARES: Symbol.BTCVEF,
+    Currency.VIETNAMISE_DONGS: Symbol.BTCVND,
 }

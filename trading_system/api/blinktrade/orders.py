@@ -23,7 +23,7 @@ class BlinkTradeOrdersApi(IOrdersApi):
         msg = {
             'MsgType': consts.MessageType.PLACE_ORDER,
             'ClOrdID': self.client.get_unique_id(),
-            'Symbol': consts.CURRENCY_TO_PAIR_MAP[self.client.currency],
+            'Symbol': consts.CURRENCY_TO_SYMBOL_MAP[self.client.currency],
             'Side': order_side,
             'OrdType': order_type,
             'Price': self.client.get_satoshi_value(price),
@@ -55,34 +55,31 @@ class BlinkTradeOrdersApi(IOrdersApi):
         return [self._make_placed_order_from_dict(order) for order in order_list]
 
     def _make_placed_order_from_dict(self, order):
+        # TODO: Store price and volume as float values
+        # TODO: Review order quantity x volume on responses, exec_type x order_type, exec_side x side
         return beans.PlacedOrder(
-            order_id=self._get_int_value_from_dict_or_none(order, 'OrderID'),
-            time_in_force=str(order.get('TimeInForce')),
-            exec_id=self._get_int_value_from_dict_or_none(order, 'ExecID'),
-            exec_type=str(order.get('ExecType')),
-            order_status=str(order.get('OrdStatus')),
-            cum_quantity=self._get_int_value_from_dict_or_none(order, 'CumQty'),
-            price=self._get_int_value_from_dict_or_none(order, 'Price'),
-            symbol=str(order.get('Symbol')),
-            order_quantity=self._get_int_value_from_dict_or_none(order, 'OrderQty'),
-            last_shares=self._get_int_value_from_dict_or_none(order, 'LastShares'),
-            last_px=self._get_int_value_from_dict_or_none(order, 'LastPx'),
-            cxl_quantity=self._get_int_value_from_dict_or_none(order, 'CxlQty'),
-            volume=self._get_int_value_from_dict_or_none(order, 'Volume'),
-            leaves_quantity=self._get_int_value_from_dict_or_none(order, 'LeavesQty'),
-            message_type=str(order.get('MsgType')),
-            exec_side=str(order.get('ExecSide')),
-            order_type=str(order.get('OrdType')),
-            order_rejection_reason=str(order.get('OrdRejReason')),
-            side=str(order.get('Side')),
-            client_order_id=self._get_int_value_from_dict_or_none(order, 'ClOrdID'),
-            average_px=self._get_int_value_from_dict_or_none(order, 'AvgPx'),
+            order_id=str(order.get('OrderID')),
+            exec_id=self._get_str_value_or_none(order, 'ExecID'),
+            exec_type=order.get('ExecType'),
+            order_status=order.get('OrdStatus'),
+            price=self.client.get_decimal_value(self._get_int_value_or_none(order, 'Price')),
+            symbol=order.get('Symbol'),
+            amount=self.client.get_decimal_value(self._get_int_value_or_none(order, 'OrderQty')),
+            message_type=order.get('MsgType'),
+            order_rejection_reason=order.get('OrdRejReason'),
+            side=order.get('Side'),
+            client_order_id=str(order.get('ClOrdID')),
         )
 
     @staticmethod
-    def _get_int_value_from_dict_or_none(source, key):
+    def _get_int_value_or_none(source, key):
         value = source.get(key)
         return int(value) if value else None
+
+    @staticmethod
+    def _get_str_value_or_none(source, key):
+        value = source.get(key)
+        return str(value) if value else None
 
     def _get_order_status_from_response(self, response):
         responses = [r for r in response['Responses'] if r['MsgType'] == consts.MessageType.ORDER_STATUS_RESPONSE]
@@ -105,12 +102,12 @@ class BlinkTradeOrdersApi(IOrdersApi):
         balance = balance_list[0]
         broker = balance[str(self.client.broker)]
         return beans.Balance(
-            currency=self.client.get_currency_value(broker.get(self.client.currency)),
-            currency_locked=self.client.get_currency_value(
+            currency=self.client.get_decimal_value(broker.get(self.client.currency)),
+            currency_locked=self.client.get_decimal_value(
                 broker.get('{currency}_locked'.format(currency=self.client.currency))
             ),
-            btc=self.client.get_currency_value(broker.get('BTC')),
-            btc_locked=self.client.get_currency_value(broker.get('BTC_locked')),
+            btc=self.client.get_decimal_value(broker.get('BTC')),
+            btc_locked=self.client.get_decimal_value(broker.get('BTC_locked')),
         )
 
     def cancel_order(self, order_id):

@@ -1,21 +1,26 @@
 import operator
 
 from trading_system import consts
-from trading_system.api.blinktrade.clients import BlinkTradeClient
+from trading_system.api.bitfinex.clients import BitfinexClient
 from trading_system.systems.settings import *
 
 
 class ManualTradingSystem(object):
     def __init__(self):
-        self.client = BlinkTradeClient(
+        self.client = BitfinexClient(
             consts.Environment.PRODUCTION,
-            consts.Currency.BRAZILIAN_REAIS,
-            consts.Broker.FOXBIT,
-            BLINKTRADE_KEY, BLINKTRADE_SECRET,
+            consts.Symbol.BTCUSD,
+            BITFINEX_KEY, BITFINEX_SECRET,
         )
+
+    def get_ticker(self):
+        return self.client.market.get_ticker()
 
     def get_order_book(self):
         return self.client.market.get_order_book()
+
+    def get_trade_list(self, offset=3600):
+        return self.client.market.get_trade_list(offset)
 
     def show_orders_grouped_by_user(self, valid_percentage):
         order_book = self.get_order_book()
@@ -52,4 +57,7 @@ class ManualTradingSystem(object):
 
 if __name__ == '__main__':
     system = ManualTradingSystem()
-    system.show_orders_grouped_by_user(valid_percentage=5)
+    print(system.get_ticker())
+    print(system.get_order_book())
+    print(system.get_trade_list())
+    # system.show_orders_grouped_by_user(valid_percentage=5)

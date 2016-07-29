@@ -26,10 +26,10 @@ class BlinkTradeAccountApi(IAccountApi):
         """
         broker = broker[0] if broker else {}
         return beans.Balance(
-            currency=self.client.get_currency_value(broker.get(self.client.currency)),
-            currency_locked=self.client.get_currency_value(
-                broker.get('{currency}_locked'.format(currency=self.client.currency))
+            currency=self.client.get_decimal_value(broker.get(self.client.currency, 0)),
+            currency_locked=self.client.get_decimal_value(
+                broker.get('{currency}_locked'.format(currency=self.client.currency), 0)
             ),
-            btc=self.client.get_currency_value(broker.get('BTC')),
-            btc_locked=self.client.get_currency_value(broker.get('BTC_locked')),
+            btc=self.client.get_decimal_value(broker.get('BTC', 0)),
+            btc_locked=self.client.get_decimal_value(broker.get('BTC_locked', 0)),
         )
