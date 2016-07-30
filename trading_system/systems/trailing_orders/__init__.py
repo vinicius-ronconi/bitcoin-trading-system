@@ -44,8 +44,8 @@ class TrailingOrders(ITradingSystem):
         print('---------------------------------------')
         next_operation = self._get_next_operation()
         setup_func = {
-            consts.OrderSide.BUY: self._setup_to_buy,
-            consts.OrderSide.SELL: self._setup_to_sell,
+            'buy': self._setup_to_buy,
+            'sell': self._setup_to_sell,
         }[next_operation]
 
         return setup_func()
@@ -63,12 +63,12 @@ class TrailingOrders(ITradingSystem):
 
         return beans.TrailingOrderSetup(
             next_operation=consts.OrderSide.BUY,
-            start_value=start_value,
-            stop_value=stop_value,
-            reversal=reversal,
-            stop_loss=stop_loss,
-            operational_cost=operational_cost,
-            profit=profit,
+            start_value=self._get_rounded_value(start_value),
+            stop_value=self._get_rounded_value(stop_value),
+            reversal=self._get_rounded_value(reversal),
+            stop_loss=self._get_rounded_value(stop_loss),
+            operational_cost=self._get_rounded_value(operational_cost),
+            profit=self._get_rounded_value(profit),
         )
 
     def _setup_to_sell(self):
@@ -84,12 +84,12 @@ class TrailingOrders(ITradingSystem):
 
         return beans.TrailingOrderSetup(
             next_operation=consts.OrderSide.SELL,
-            start_value=start_value,
-            stop_value=stop_value,
-            reversal=reversal,
-            stop_loss=stop_loss,
-            operational_cost=operational_cost,
-            profit=profit,
+            start_value=self._get_rounded_value(start_value),
+            stop_value=self._get_rounded_value(stop_value),
+            reversal=self._get_rounded_value(reversal),
+            stop_loss=self._get_rounded_value(stop_loss),
+            operational_cost=self._get_rounded_value(operational_cost),
+            profit=self._get_rounded_value(profit),
         )
 
     @staticmethod
