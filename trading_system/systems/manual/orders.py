@@ -14,5 +14,12 @@ class ManualTradingSystem(object):
     def get_pending_orders(self, page, page_size):
         return self.client.orders.get_pending_orders(page, page_size)
 
+    def sell_bitcoins(self):
+        return self.client.orders.sell_bitcoins(
+            order_type='exchange limit',
+            price=659.20,
+            quantity=0.249275)
+
 if __name__ == '__main__':
+    print (ManualTradingSystem().sell_bitcoins())
     print(ManualTradingSystem().get_pending_orders(1, 10))
