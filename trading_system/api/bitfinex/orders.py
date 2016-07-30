@@ -13,12 +13,13 @@ class BitfinexOrdersApi(IOrdersApi):
 
     def buy_bitcoins(self, order_type, price, quantity):
         side = consts.ORDER_SIDE_TO_TEXT_MAP[consts.OrderSide.BUY]
-        response = self.client.trade_api.place_order(quantity, price, side, self.ORDER_TYPE)
+        response = self.client.trade_api.place_order(str(quantity), str(price), side, self.ORDER_TYPE)
         return self._make_placed_order_from_response(response)
 
     def sell_bitcoins(self, order_type, price, quantity):
         side = consts.ORDER_SIDE_TO_TEXT_MAP[consts.OrderSide.SELL]
-        response = self.client.trade_api.place_order(quantity, price, side, self.ORDER_TYPE)
+        response = self.client.trade_api.place_order(str(quantity), str(price), side, self.ORDER_TYPE)
+        print(response)
         return self._make_placed_order_from_response(response)
 
     def cancel_order(self, order_id):
