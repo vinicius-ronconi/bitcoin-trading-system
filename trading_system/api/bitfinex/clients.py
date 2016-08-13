@@ -41,16 +41,3 @@ class BitfinexClient(IClient):
     @staticmethod
     def _validate_environment_type(env):
         return env if env in consts.ENVIRONMENTS_CHOICES else consts.Environment.TEST
-
-    @staticmethod
-    def get_decimal_value(satoshi):
-        if satoshi is None:
-            return None
-        return float(satoshi) / consts.SATOSHI_PRECISION
-
-    @staticmethod
-    def get_satoshi_value(value):
-        # TODO: Remove from interface and move to a utils module
-        if value is None:
-            return None
-        return int(value * consts.SATOSHI_PRECISION)

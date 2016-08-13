@@ -1,8 +1,3 @@
-import time
-
-import requests
-
-from trading_system import consts
 from trading_system.api import beans
 from trading_system.api.interfaces import IMarketApi
 
@@ -15,7 +10,7 @@ class BlinkTradeMarketApi(IMarketApi):
         self.client = client
 
     def get_ticker(self):
-        response = self._get_market_data(consts.MarketInformation.TICKER)
+        response = self.client.open_api.get_ticker()
         return beans.Ticker(
             currency_pair=str(response.get('pair')),
             last_value=float(response.get('last')),
@@ -28,17 +23,15 @@ class BlinkTradeMarketApi(IMarketApi):
         )
 
     def get_order_book(self):
-        response = self._get_market_data(consts.MarketInformation.ORDER_BOOK)
+        response = self.client.open_api.get_order_book()
         return beans.OrderBook(
             currency_pair=str(response.get('pair')),
             bids=[beans.OrderInBook(price=bid[0], amount=bid[1], user_id=bid[2]) for bid in response.get('bids')],
             asks=[beans.OrderInBook(price=bid[0], amount=bid[1], user_id=bid[2]) for bid in response.get('asks')],
         )
 
-    def get_trade_list(self, offset=3600):
-        response = self._get_market_data(
-            consts.MarketInformation.TRADES, params='?since={offset}'.format(offset=int(time.time()) - offset),
-        )
+    def get_trade_list(self, since_ts=0):
+        response = self.client.open_api.get_trade_list(since_ts)
         return [beans.Trade(
             transaction_id=int(item.get('tid')),
             date=int(item.get('date')),
@@ -46,13 +39,3 @@ class BlinkTradeMarketApi(IMarketApi):
             amount=float(item.get('amount')),
             side=str(item.get('side')),
         ) for item in response]
-
-    def _get_market_data(self, requested_info, params=''):
-        url = '{domain}/api/{version}/{currency}/{type}{params}'.format(
-            domain=self.client.environment_server,
-            version=self.client.API_VERSION,
-            currency=self.client.currency,
-            type=requested_info,
-            params=params,
-        )
-        return requests.get(url).json()

@@ -23,22 +23,6 @@ class IClient(object):
     market = NotImplemented
     orders = NotImplemented
 
-    @staticmethod
-    @abstractmethod
-    def get_decimal_value(satoshi):
-        """
-        :type satoshi: int
-        :rtype: float
-        """
-
-    @staticmethod
-    @abstractmethod
-    def get_satoshi_value(value):
-        """
-        :type value: float
-        :rtype: int
-        """
-
 
 class IMarketApi(object):
     __metaclass__ = ABCMeta
@@ -56,8 +40,9 @@ class IMarketApi(object):
         """
 
     @abstractmethod
-    def get_trade_list(self, offset):
+    def get_trade_list(self, since_ts):
         """
+        :type since_ts: int
         :rtype: list[trading_system.api.beans.Trade]
         """
 
@@ -65,19 +50,18 @@ class IMarketApi(object):
 class IOrdersApi(object):
     __metaclass__ = ABCMeta
 
+    # TODO: Add market orders
     @abstractmethod
-    def buy_bitcoins(self, order_type, price, quantity):
+    def buy_bitcoins_with_limited_order(self, price, quantity):
         """
-        :type order_type: basestring
         :type price: float
         :type quantity: float
         :rtype: list[trading_system.api.beans.PlacedOrder|trading_system.api.beans.Balance]
         """
 
     @abstractmethod
-    def sell_bitcoins(self, order_type, price, quantity):
+    def sell_bitcoins_with_limited_order(self, price, quantity):
         """
-        :type order_type: basestring
         :type price: float
         :type quantity: float
         :rtype: list[trading_system.api.beans.PlacedOrder|trading_system.api.beans.Balance]

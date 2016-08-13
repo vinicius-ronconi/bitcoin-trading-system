@@ -19,37 +19,3 @@ class EnvironmentTestCase(TestCase):
         self.assertIsNotNone(self.client.account)
         self.assertIsNotNone(self.client.market)
         self.assertIsNotNone(self.client.orders)
-
-    def test_it_defaults_to_brazilian_test_environment(self):
-        client = BlinkTradeClient('invalid type', 'invalid currency', 'invalid broker', 'my_key', 'secret_key')
-        self.assertEqual(client.environment_type, consts.Environment.TEST)
-        self.assertTrue('testnet' in client.environment_server)
-        self.assertEqual(client.currency, consts.Currency.BRAZILIAN_REAIS)
-        self.assertEqual(client.broker, consts.Broker.FOXBIT)
-
-    def test_it_converts_satoshi_to_currency(self):
-        satoshi = 123456789
-        currency = self.client.get_decimal_value(satoshi)
-        self.assertIsInstance(currency, float)
-        self.assertEqual(currency, float(satoshi) / consts.SATOSHI_PRECISION)
-
-    def test_it_returns_none_for_none_satoshi(self):
-        satoshi = None
-        currency = self.client.get_decimal_value(satoshi)
-        self.assertIsNone(currency)
-
-    def test_it_converts_currency_to_satoshi(self):
-        value = 1234
-        satoshi = self.client.get_satoshi_value(value)
-        self.assertIsInstance(satoshi, int)
-        self.assertEqual(satoshi, int(value * consts.SATOSHI_PRECISION))
-
-    def test_it_returns_none_for_none_value(self):
-        value = None
-        satoshi = self.client.get_satoshi_value(value)
-        self.assertIsNone(satoshi)
-
-    def test_if_creates_an_int_unique_id(self):
-        value = self.client.get_unique_id()
-        self.assertIsInstance(value, int)
-        self.assertGreater(value, 0)

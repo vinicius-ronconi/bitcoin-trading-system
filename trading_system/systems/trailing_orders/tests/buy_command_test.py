@@ -47,7 +47,7 @@ class TrailingOrdersTestCase(TestCase):
         self._assert_results(buy_call_count=0, sell_call_count=0, order_side=consts.OrderSide.BUY, is_tracking=False)
 
     def _assert_results(self, buy_call_count, sell_call_count, order_side, is_tracking):
-        self.assertEqual(self.command.system.client.orders.buy_bitcoins.call_count, buy_call_count)
-        self.assertEqual(self.command.system.client.orders.sell_bitcoins.call_count, sell_call_count)
+        self.assertEqual(self.command.system.client.orders.buy_bitcoins_with_limited_order.call_count, buy_call_count)
+        self.assertEqual(self.command.system.client.orders.sell_bitcoins_with_limited_order.call_count, sell_call_count)
         self.assertEqual(self.command.system.next_operation, order_side)
         self.assertEqual(self.command.system.is_tracking, is_tracking)

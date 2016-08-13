@@ -34,7 +34,7 @@ class BitfinexOrdersApiTestCase(TestCase):
             'executed_amount': '0.0',
             'order_id': 448364249,
         })
-        order_response = self.orders_api.buy_bitcoins(consts.OrderType.LIMITED_ORDER, price=2175, quantity=0.0313)
+        order_response = self.orders_api.buy_bitcoins_with_limited_order(price=2175, quantity=0.0313)
         self.assertIsInstance(order_response, beans.PlacedOrder)
         self.assertEqual(order_response.order_id, '448364249')
         self.assertEqual(order_response.exec_id, '448364249')
@@ -67,7 +67,7 @@ class BitfinexOrdersApiTestCase(TestCase):
             'executed_amount': '0.0',
             'order_id': 448364249,
         })
-        order_response = self.orders_api.sell_bitcoins(consts.OrderType.LIMITED_ORDER, price=2175, quantity=0.0313)
+        order_response = self.orders_api.sell_bitcoins_with_limited_order(price=2175, quantity=0.0313)
         self.assertIsInstance(order_response, beans.PlacedOrder)
         self.assertEqual(order_response.order_id, '448364249')
         self.assertEqual(order_response.exec_id, '448364249')

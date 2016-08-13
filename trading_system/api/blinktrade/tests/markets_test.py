@@ -8,7 +8,7 @@ from trading_system.api.blinktrade.clients import BlinkTradeClient
 from trading_system.api.blinktrade.markets import BlinkTradeMarketApi
 
 
-class BlinkTradeOrdersApiTestCase(TestCase):
+class MarketTestCase(TestCase):
     def setUp(self):
         client = BlinkTradeClient(
             consts.Environment.PRODUCTION,
@@ -19,7 +19,7 @@ class BlinkTradeOrdersApiTestCase(TestCase):
         )
         self.market_api = BlinkTradeMarketApi(client)
 
-    @mock.patch('trading_system.api.blinktrade.markets.BlinkTradeMarketApi._get_market_data', mock.Mock(return_value={
+    @mock.patch('blinktrade.clients.OpenClient.get_ticker', mock.Mock(return_value={
         'high': 2299.9,
         'vol': 305.5,
         'buy': 2279.8,
@@ -40,10 +40,10 @@ class BlinkTradeOrdersApiTestCase(TestCase):
         self.assertEqual(ticker.best_sell_order, 2295.98)
         self.assertEqual(ticker.volume_currency, 691963.42)
 
-    @mock.patch('trading_system.api.blinktrade.markets.BlinkTradeMarketApi._get_market_data', mock.Mock(return_value={
+    @mock.patch('blinktrade.clients.OpenClient.get_order_book', mock.Mock(return_value={
         'pair': 'BTCBRL',
-        'bids': [[2279.9, 0.0421, 1000],],
-        'asks': [[2295.9, 0.2445, 2000],],
+        'bids': [[2279.9, 0.0421, 1000], ],
+        'asks': [[2295.9, 0.2445, 2000], ],
     }))
     def test_it_get_order_book(self):
         order_book = self.market_api.get_order_book()
@@ -59,7 +59,7 @@ class BlinkTradeOrdersApiTestCase(TestCase):
         self.assertEqual(order_book.asks[0].amount, 0.2445)
         self.assertEqual(order_book.asks[0].user_id, 2000)
 
-    @mock.patch('trading_system.api.blinktrade.markets.BlinkTradeMarketApi._get_market_data', mock.Mock(return_value=[
+    @mock.patch('blinktrade.clients.OpenClient.get_trade_list', mock.Mock(return_value=[
         {'tid': 1000, 'date': 1467037014, 'price': 2300.0, 'amount': 0.02, 'side': 'sell'},
     ]))
     def test_it_get_trades(self):

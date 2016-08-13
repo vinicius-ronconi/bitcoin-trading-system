@@ -1,4 +1,4 @@
-from trading_system import consts
+from trading_system import consts, utils
 from trading_system.systems.interfaces import IOrderCommand
 
 
@@ -24,11 +24,11 @@ class BuyBitcoinsCommand(IOrderCommand):
 
     def _evaluate_last_quote_to_buy_bitcoins(self, last_quote):
         if last_quote >= self.system.buy_price:
-            quantity = self.system.client.get_satoshi_value(self.system.balance.currency/last_quote)
+            quantity = utils.get_floor_in_satoshi_precision(self.system.balance.currency/last_quote)
             self.system.log_info(
                 'BUYING {quantity} BITCOINS - price: {value}'.format(quantity=quantity, value=self.system.buy_price)
             )
-            self.system.client.orders.buy_bitcoins(consts.OrderType.LIMITED_ORDER, self.system.buy_price, quantity)
+            self.system.client.orders.buy_bitcoins_with_limited_order(self.system.buy_price, quantity)
             self.system.setup.next_operation = consts.OrderSide.SELL
             self.system.is_tracking = False
 
@@ -75,7 +75,7 @@ class SellBitcoinsCommand(IOrderCommand):
             self.system.is_tracking = False
 
     def _sell_bitcoins(self, sell_value):
-        self.system.client.orders.sell_bitcoins(consts.OrderType.LIMITED_ORDER, sell_value, self.system.balance.btc)
+        self.system.client.orders.sell_bitcoins_with_limited_order(sell_value, self.system.balance.btc)
         self.system.setup.next_operation = consts.OrderSide.BUY
 
     def _evaluate_last_quote_to_start_selling_track(self, last_quote):
