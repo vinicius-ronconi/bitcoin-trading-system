@@ -10,7 +10,7 @@ class TrailingOrdersTestCase(TestCase):
     def setUp(self):
         system = mock.MagicMock()
         self.command = BuyBitcoinsCommand(system)
-        self.command.system.next_operation = consts.OrderSide.BUY
+        self.command.system.setup.next_operation = consts.OrderSide.BUY
 
     def test_it_places_a_buy_order(self):
         self.command.system.is_tracking = True
@@ -32,22 +32,22 @@ class TrailingOrdersTestCase(TestCase):
 
     def test_it_starts_tracking(self):
         self.command.system.is_tracking = False
-        self.command.system.start_value = 1000.0
-        self.command.execute(self.command.system.start_value)
+        self.command.system.setup.start_value = 1000.0
+        self.command.execute(self.command.system.setup.start_value)
         self._assert_results(buy_call_count=0, sell_call_count=0, order_side=consts.OrderSide.BUY, is_tracking=True)
 
         self.command.system.is_tracking = False
-        self.command.execute(self.command.system.start_value - 0.01)
+        self.command.execute(self.command.system.setup.start_value - 0.01)
         self._assert_results(buy_call_count=0, sell_call_count=0, order_side=consts.OrderSide.BUY, is_tracking=True)
 
     def test_it_does_not_start_tracking(self):
         self.command.system.is_tracking = False
-        self.command.system.start_value = 1000.0
-        self.command.execute(self.command.system.start_value + 0.01)
+        self.command.system.setup.start_value = 1000.0
+        self.command.execute(self.command.system.setup.start_value + 0.01)
         self._assert_results(buy_call_count=0, sell_call_count=0, order_side=consts.OrderSide.BUY, is_tracking=False)
 
     def _assert_results(self, buy_call_count, sell_call_count, order_side, is_tracking):
         self.assertEqual(self.command.system.client.orders.buy_bitcoins_with_limited_order.call_count, buy_call_count)
         self.assertEqual(self.command.system.client.orders.sell_bitcoins_with_limited_order.call_count, sell_call_count)
-        self.assertEqual(self.command.system.next_operation, order_side)
+        self.assertEqual(self.command.system.setup.next_operation, order_side)
         self.assertEqual(self.command.system.is_tracking, is_tracking)
