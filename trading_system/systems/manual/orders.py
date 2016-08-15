@@ -19,5 +19,5 @@ class ManualTradingSystem(object):
         return self.client.orders.sell_bitcoins_with_limited_order(price=659.20, quantity=0.249275)
 
 if __name__ == '__main__':
-    print (ManualTradingSystem().sell_bitcoins())
+    print(ManualTradingSystem().sell_bitcoins())
     print(ManualTradingSystem().get_pending_orders(1, 10))
