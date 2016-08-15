@@ -1,6 +1,6 @@
 from trading_system import consts
 from trading_system.api.bitfinex.clients import BitfinexClient
-from trading_system.systems.settings import *
+from trading_system.systems.settings import BITFINEX_KEY, BITFINEX_SECRET
 
 
 class ManualTradingSystem(object):
@@ -8,7 +8,8 @@ class ManualTradingSystem(object):
         self.client = BitfinexClient(
             consts.Environment.PRODUCTION,
             consts.Symbol.BTCUSD,
-            BITFINEX_KEY, BITFINEX_SECRET,
+            BITFINEX_KEY,
+            BITFINEX_SECRET,
         )
 
     def get_balance(self):

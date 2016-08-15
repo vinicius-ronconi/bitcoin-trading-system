@@ -1,7 +1,7 @@
 from trading_system import consts
 from trading_system.api.blinktrade.clients import BlinkTradeClient
 from trading_system.systems.executor import SystemExecutor
-from trading_system.systems.settings import *
+from trading_system.systems.settings import BLINKTRADE_KEY, BLINKTRADE_SECRET
 from trading_system.systems.trailing_orders import TrailingOrders
 
 

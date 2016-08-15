@@ -1,7 +1,7 @@
 from trading_system import consts
 from trading_system.api.bitfinex.clients import BitfinexClient
 from trading_system.systems.executor import SystemExecutor
-from trading_system.systems.settings import *
+from trading_system.systems.settings import BITFINEX_KEY, BITFINEX_SECRET
 from trading_system.systems.trailing_orders import TrailingOrders
 
 
