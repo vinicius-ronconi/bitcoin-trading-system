@@ -1,4 +1,4 @@
-bitfinex==0.2.6
+git+git://github.com/scottjbarr/bitfinex/
 blinktrade==0.1.0
 coverage==4.1
 flake8==3.0.4
