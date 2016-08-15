@@ -25,8 +25,8 @@ class ManualTradingSystem(object):
     def show_orders_grouped_by_user(self, valid_percentage):
         order_book = self.get_order_book()
         ticker = self.client.market.get_ticker()
-        valid_bid_price = ticker.last_value * (100.0 - valid_percentage)/100
-        valid_ask_price = ticker.last_value * (100.0 + valid_percentage)/100
+        valid_bid_price = ticker.last_value * (100.0 - valid_percentage) / 100
+        valid_ask_price = ticker.last_value * (100.0 + valid_percentage) / 100
         print('last value = {}'.format(ticker.last_value))
         print('valid bid = {}'.format(valid_bid_price))
         print('valid ask = {}'.format(valid_ask_price))

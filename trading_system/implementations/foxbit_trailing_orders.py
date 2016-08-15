@@ -12,7 +12,8 @@ class FoxbitTrailingOrder(object):
             consts.Environment.PRODUCTION,
             consts.Currency.BRAZILIAN_REAIS,
             consts.Broker.FOXBIT,
-            BLINKTRADE_KEY, BLINKTRADE_SECRET
+            BLINKTRADE_KEY,
+            BLINKTRADE_SECRET,
         )
 
         self.system = TrailingOrders(client)

@@ -5,6 +5,7 @@ from trading_system.api.interfaces import IOrdersApi
 
 class BitfinexOrdersApi(IOrdersApi):
     ORDER_TYPE = 'exchange limit'
+
     def __init__(self, client):
         """
         :type client: trading_system.api.bitfinex.clients.BitfinexClient
@@ -62,4 +63,3 @@ class BitfinexOrdersApi(IOrdersApi):
 
         if order['is_live']:
             return consts.OrderStatus.NEW
-

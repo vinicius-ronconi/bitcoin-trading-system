@@ -58,7 +58,7 @@ class TrailingOrders(ITradingSystem):
         profit = self._get_profit()
 
         buy_price = self._get_buy_price(start_value, reversal)
-        sell_price = buy_price * (1 + ((operational_cost + profit)/100))
+        sell_price = buy_price * (1 + ((operational_cost + profit) / 100))
         stop_value = (sell_price * 100) / (100 - reversal)
 
         return beans.TrailingOrderSetup(
@@ -79,7 +79,7 @@ class TrailingOrders(ITradingSystem):
         profit = self._get_profit()
 
         sell_price = self._get_sell_price(stop_value, reversal)
-        buy_price = sell_price * (1 - ((operational_cost + profit)/100))
+        buy_price = sell_price * (1 - ((operational_cost + profit) / 100))
         start_value = (buy_price * 100) / (100 + reversal)
 
         return beans.TrailingOrderSetup(
@@ -217,7 +217,7 @@ class TrailingOrders(ITradingSystem):
 
     @staticmethod
     def _get_rounded_value(value):
-        return floor(value*100)/100
+        return floor(value * 100) / 100
 
     @staticmethod
     def log_info(text):

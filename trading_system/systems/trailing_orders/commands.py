@@ -24,7 +24,7 @@ class BuyBitcoinsCommand(IOrderCommand):
 
     def _evaluate_last_quote_to_buy_bitcoins(self, last_quote):
         if last_quote >= self.system.buy_price:
-            quantity = utils.get_floor_in_satoshi_precision(self.system.balance.currency/last_quote)
+            quantity = utils.get_floor_in_satoshi_precision(self.system.balance.currency / last_quote)
             self.system.log_info(
                 'BUYING {quantity} BITCOINS - price: {value}'.format(quantity=quantity, value=self.system.buy_price)
             )

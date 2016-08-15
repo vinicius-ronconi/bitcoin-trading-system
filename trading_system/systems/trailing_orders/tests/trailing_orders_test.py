@@ -21,7 +21,7 @@ class TrailingOrdersTestCase(TestCase):
         last_quote = self.START_VALUE / 2
         self.system.update_start_stop_values_if_necessary(last_quote)
         self.assertEqual(self.system.setup.start_value, last_quote)
-        self.assertEqual(self.system.setup.stop_value, self.STOP_VALUE * (last_quote/self.START_VALUE))
+        self.assertEqual(self.system.setup.stop_value, self.STOP_VALUE * (last_quote / self.START_VALUE))
 
     def test_it_update_start_stop_values_during_sell_operation(self):
         self._setup_operation(consts.OrderSide.SELL)
