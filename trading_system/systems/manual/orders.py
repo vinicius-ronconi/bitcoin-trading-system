@@ -15,9 +15,17 @@ class ManualTradingSystem(object):
     def get_pending_orders(self, page, page_size):
         return self.client.orders.get_pending_orders(page, page_size)
 
-    def sell_bitcoins(self):
-        return self.client.orders.sell_bitcoins_with_limited_order(price=659.20, quantity=0.249275)
+    def buy_bitcoins_with_limited_order(self, price, quantity):
+        return self.client.orders.buy_bitcoins_with_limited_order(price, quantity)
+
+    def sell_bitcoins_with_limited_order(self, price, quantity):
+        return self.client.orders.sell_bitcoins_with_limited_order(price, quantity)
+
+    def cancel_order(self, order_id):
+        return self.client.orders.cancel_order(order_id)
 
 if __name__ == '__main__':
-    print(ManualTradingSystem().sell_bitcoins())
     print(ManualTradingSystem().get_pending_orders(1, 10))
+    print(ManualTradingSystem().sell_bitcoins_with_limited_order(578.20, 0.215))
+    print(ManualTradingSystem().buy_bitcoins_with_limited_order(575.0, 0.215))
+    print(ManualTradingSystem().cancel_order(1011770681))
