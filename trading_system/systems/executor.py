@@ -1,6 +1,7 @@
 import threading
 import traceback
 from datetime import datetime
+from requests.exceptions import ReadTimeout, ConnectionError
 
 
 class SystemExecutor(object):
@@ -15,6 +16,8 @@ class SystemExecutor(object):
     def execute(self):
         try:
             self.system.run()
+        except (ReadTimeout, ConnectionError):
+            pass
         except Exception as e:
             curr = datetime.now()
             print('{time} - {text} - {args}'.format(time=curr.strftime('%Y-%m-%d %H:%M:%S'), text=str(e), args=e.args))
