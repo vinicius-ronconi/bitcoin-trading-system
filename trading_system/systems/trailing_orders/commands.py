@@ -29,7 +29,7 @@ class BuyBitcoinsCommand(IOrderCommand):
                 'BUYING {quantity} BITCOINS - price: {value}'.format(quantity=quantity, value=self.system.buy_price)
             )
             self.system.client.orders.buy_bitcoins_with_limited_order(self.system.buy_price, quantity)
-            self.system.setup.next_operation = consts.OrderSide.SELL
+            self.system.set_next_operation(consts.OrderSide.SELL)
             self.system.is_tracking = False
 
     def _evaluate_last_quote_to_start_buying_track(self, last_quote):
@@ -76,7 +76,7 @@ class SellBitcoinsCommand(IOrderCommand):
 
     def _sell_bitcoins(self, sell_value):
         self.system.client.orders.sell_bitcoins_with_limited_order(sell_value, self.system.balance.btc)
-        self.system.setup.next_operation = consts.OrderSide.BUY
+        self.system.set_next_operation(consts.OrderSide.BUY)
 
     def _evaluate_last_quote_to_start_selling_track(self, last_quote):
         self.system.is_tracking = last_quote >= self.system.setup.stop_value

@@ -223,3 +223,14 @@ class TrailingOrders(ITradingSystem):
     def log_info(text):
         curr = datetime.now()
         print('{time} - {text}'.format(time=curr.strftime('%Y-%m-%d %H:%M:%S'), text=text))
+
+    def set_next_operation(self, next_operation):
+        self.setup = beans.TrailingOrderSetup(
+            next_operation=next_operation,
+            start_value=self.setup.start_value,
+            stop_value=self.setup.stop_value,
+            reversal=self.setup.reversal,
+            stop_loss=self.setup.stop_loss,
+            operational_cost=self.setup.operational_cost,
+            profit=self.setup.profit,
+        )
