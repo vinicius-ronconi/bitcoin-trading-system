@@ -121,6 +121,23 @@ class TrailingOrdersTestCase(TestCase):
         self.assertEqual(self.system.buy_price, 97.01)
         self.assertEqual(self.system.stop_loss_price, 94.12)
 
+    def test_it_sets_next_operation(self):
+        self._setup_next_operation('buy')
+        self._setup_start_value(100)
+        self._setup_reversal(1)
+        self._setup_stop_loss(2)
+        self._setup_operational_cost(1)
+        self._setup_profit(1)
+
+        client = mock.Mock()
+        self.system = TrailingOrders(client)
+        self.system.set_next_operation(consts.OrderSide.SELL)
+
+        self.assertEqual(self.system.setup.next_operation, consts.OrderSide.SELL)
+
+        self.system.set_next_operation(consts.OrderSide.BUY)
+        self.assertEqual(self.system.setup.next_operation, consts.OrderSide.BUY)
+
     def _setup_next_operation(self, next_operation):
         self.next_operation = mock.MagicMock(return_value=next_operation)
         next_operation_patcher = mock.patch(
