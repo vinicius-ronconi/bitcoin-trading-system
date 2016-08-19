@@ -16,7 +16,7 @@ class BitfinexOrdersApiTestCase(TestCase):
         self.orders_api = BitfinexOrdersApi(client)
 
     def test_it_places_a_buy_order(self):
-        self.orders_api.client.trade_api.place_order = mock.Mock(return_value={
+        self.orders_api.client.auth_api.place_order = mock.Mock(return_value={
             'id': 448364249,
             'symbol': 'btcusd',
             'exchange': 'bitfinex',
@@ -49,7 +49,7 @@ class BitfinexOrdersApiTestCase(TestCase):
         self.assertIsNone(order_response.order_rejection_reason)
 
     def test_it_places_a_sell_order(self):
-        self.orders_api.client.trade_api.place_order = mock.Mock(return_value={
+        self.orders_api.client.auth_api.place_order = mock.Mock(return_value={
             'id': 448364249,
             'symbol': 'btcusd',
             'exchange': 'bitfinex',
@@ -82,7 +82,7 @@ class BitfinexOrdersApiTestCase(TestCase):
         self.assertIsNone(order_response.order_rejection_reason)
 
     def test_it_cancels_an_order(self):
-        self.orders_api.client.trade_api.delete_order = mock.Mock(return_value={
+        self.orders_api.client.auth_api.delete_order = mock.Mock(return_value={
             'id': 446915287,
             'symbol': 'btcusd',
             'exchange': None,
@@ -114,7 +114,7 @@ class BitfinexOrdersApiTestCase(TestCase):
         self.assertIsNone(order_response.client_order_id)
 
     def test_it_gets_pending_orders(self):
-        self.orders_api.client.trade_api.active_orders = mock.Mock(return_value=[{
+        self.orders_api.client.auth_api.active_orders = mock.Mock(return_value=[{
             'id': 448411365,
             'symbol': 'btcusd',
             'exchange': 'bitfinex',

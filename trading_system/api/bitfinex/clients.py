@@ -10,8 +10,8 @@ class BitfinexClient(IClient):
         consts.Environment.TEST: 'https://api.testnet.bitfinex.com',
     }
 
-    api = NotImplemented
-    trade_api = NotImplemented
+    open_api = NotImplemented
+    auth_api = NotImplemented
     account = NotImplemented
     market = NotImplemented
     orders = NotImplemented
@@ -35,5 +35,5 @@ class BitfinexClient(IClient):
         self.market = markets.BitfinexMarketApi(self)
         self.orders = orders.BitfinexOrdersApi(self)
 
-        self.api = Client()
-        self.trade_api = TradeClient(key, secret_key)
+        self.open_api = Client()
+        self.auth_api = TradeClient(key, secret_key)

@@ -16,14 +16,14 @@ class BitfinexMarketApiTestCase(TestCase):
         self.market_api = BitfinexMarketApi(client)
 
     def test_it_get_ticker(self):
-        self.market_api.client.api.ticker = mock.Mock(return_value={
+        self.market_api.client.open_api.ticker = mock.Mock(return_value={
             'mid': '245.0',
             'bid': '245.0',
             'timestamp': '1444253422',
             'last_price': '250.0',
             'ask': '246.0',
         })
-        self.market_api.client.api.today = mock.Mock(return_value={
+        self.market_api.client.open_api.today = mock.Mock(return_value={
             'low': '240.0', 'high': '250.0', 'volume': '1000.0'
         })
         ticker = self.market_api.get_ticker()
@@ -37,7 +37,7 @@ class BitfinexMarketApiTestCase(TestCase):
         self.assertEqual(ticker.volume_currency, 250000.0)
 
     def test_it_get_order_book(self):
-        self.market_api.client.api.order_book = mock.Mock(return_value={
+        self.market_api.client.open_api.order_book = mock.Mock(return_value={
             'bids': [{'price': '500.0', 'amount': '1.5', 'timestamp': '1395557729.0'}],
             'asks': [{'price': '600.0', 'amount': '2.5', 'timestamp': '1395557711.0'}]
         })
@@ -56,7 +56,7 @@ class BitfinexMarketApiTestCase(TestCase):
         self.assertIsNone(order_book.asks[0].user_id)
 
     def test_it_get_trades(self):
-        self.market_api.client.api._get = mock.Mock(return_value=[{
+        self.market_api.client.open_api._get = mock.Mock(return_value=[{
             'timestamp': 1444266681,
             'tid': 1000,
             'price': '500.0',

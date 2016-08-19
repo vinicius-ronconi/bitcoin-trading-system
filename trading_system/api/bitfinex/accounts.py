@@ -10,7 +10,7 @@ class BitfinexAccountApi(IAccountApi):
         self.client = client
 
     def get_balance(self):
-        balance = self.client.trade_api.balances()
+        balance = self.client.auth_api.balances()
         return self._make_balance(balance)
 
     def _make_balance(self, balance_list):

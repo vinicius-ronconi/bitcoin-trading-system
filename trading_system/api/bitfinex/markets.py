@@ -12,8 +12,8 @@ class BitfinexMarketApi(IMarketApi):
         self.client = client
 
     def get_ticker(self):
-        ticker = self.client.api.ticker(self.client.symbol)
-        today = self.client.api.today(self.client.symbol)
+        ticker = self.client.open_api.ticker(self.client.symbol)
+        today = self.client.open_api.today(self.client.symbol)
         return beans.Ticker(
             currency_pair=self.client.symbol,
             last_value=float(ticker.get('last_price')),
@@ -26,7 +26,7 @@ class BitfinexMarketApi(IMarketApi):
         )
 
     def get_order_book(self):
-        response = self.client.api.order_book(self.client.symbol, parameters={'limit_bids': 2, 'limit_asks': 2})
+        response = self.client.open_api.order_book(self.client.symbol, parameters={'limit_bids': 2, 'limit_asks': 2})
         return beans.OrderBook(
             currency_pair=self.client.symbol,
             bids=[
@@ -42,7 +42,7 @@ class BitfinexMarketApi(IMarketApi):
         )
 
     def get_trade_list(self, offset=3600):
-        trades = self.client.api._get(self.client.api.url_for(
+        trades = self.client.open_api._get(self.client.open_api.url_for(
             'trades/%s', path_arg=self.client.symbol, parameters={'timestamp': int(time()) - offset}
         ))
         return [beans.Trade(

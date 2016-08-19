@@ -14,21 +14,21 @@ class BitfinexOrdersApi(IOrdersApi):
 
     def buy_bitcoins_with_limited_order(self, price, quantity):
         side = consts.ORDER_SIDE_TO_TEXT_MAP[consts.OrderSide.BUY]
-        response = self.client.trade_api.place_order(str(quantity), str(price), side, self.ORDER_TYPE)
+        response = self.client.auth_api.place_order(str(quantity), str(price), side, self.ORDER_TYPE)
         return self._make_placed_order_from_response(response)
 
     def sell_bitcoins_with_limited_order(self, price, quantity):
         side = consts.ORDER_SIDE_TO_TEXT_MAP[consts.OrderSide.SELL]
-        response = self.client.trade_api.place_order(str(quantity), str(price), side, self.ORDER_TYPE)
+        response = self.client.auth_api.place_order(str(quantity), str(price), side, self.ORDER_TYPE)
         print(response)
         return self._make_placed_order_from_response(response)
 
     def cancel_order(self, order_id):
-        response = self.client.trade_api.delete_order(order_id)
+        response = self.client.auth_api.delete_order(order_id)
         return self._make_placed_order_from_response(response)
 
     def get_pending_orders(self, page, page_size):
-        orders = self.client.trade_api.active_orders()
+        orders = self.client.auth_api.active_orders()
         orders = [self._make_placed_order_from_response(order) for order in orders]
         return orders[page * page_size: (page + 1) * page_size - 1]
 
