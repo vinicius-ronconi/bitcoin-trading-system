@@ -23,7 +23,7 @@ class BitfinexClient(IClient):
         :type key: basestring
         :type secret_key: basestring
         """
-        self.environment_type = self._validate_environment_type(environment_type)
+        self.environment_type = environment_type
         self.environment_server = self.ENV_TYPE_TO_SERVER_MAP[self.environment_type]
 
         self.symbol = symbol
@@ -37,7 +37,3 @@ class BitfinexClient(IClient):
 
         self.api = Client()
         self.trade_api = TradeClient(key, secret_key)
-
-    @staticmethod
-    def _validate_environment_type(env):
-        return env if env in consts.ENVIRONMENTS_CHOICES else consts.Environment.TEST

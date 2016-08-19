@@ -2,8 +2,6 @@ class Environment:
     PRODUCTION = 'prod'
     TEST = 'test'
 
-ENVIRONMENTS_CHOICES = {Environment.PRODUCTION, Environment.TEST}
-
 
 class Currency:
     AMERICAN_DOLLAR = 'USD'
