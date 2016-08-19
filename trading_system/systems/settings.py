@@ -12,4 +12,4 @@ try:
     BLINKTRADE_KEY = settings_local.BLINKTRADE_KEY
     BLINKTRADE_SECRET = settings_local.BLINKTRADE_SECRET
 except ImportError:
-    pass
+    settings_local = None
