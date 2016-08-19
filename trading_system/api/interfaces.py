@@ -53,7 +53,7 @@ class IMarketApi(object):
 class IOrdersApi(object):
     __metaclass__ = ABCMeta
 
-    # TODO: Add market orders
+    # TODO: Add market orders to Blinktrade
     @abstractmethod
     def buy_bitcoins_with_limited_order(self, price, quantity):
         """

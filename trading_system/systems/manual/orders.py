@@ -18,8 +18,14 @@ class ManualTradingSystem(object):
     def buy_bitcoins_with_limited_order(self, price, quantity):
         return self.client.orders.buy_bitcoins_with_limited_order(price, quantity)
 
+    def buy_bitcoins_with_market_order(self, quantity):
+        return self.client.orders.buy_bitcoins_with_market_order(quantity)
+
     def sell_bitcoins_with_limited_order(self, price, quantity):
         return self.client.orders.sell_bitcoins_with_limited_order(price, quantity)
+
+    def sell_bitcoins_with_market_order(self, quantity):
+        return self.client.orders.sell_bitcoins_with_market_order(quantity)
 
     def cancel_order(self, order_id):
         return self.client.orders.cancel_order(order_id)
@@ -29,3 +35,5 @@ if __name__ == '__main__':
     print(ManualTradingSystem().sell_bitcoins_with_limited_order(578.20, 0.215))
     print(ManualTradingSystem().buy_bitcoins_with_limited_order(575.0, 0.215))
     print(ManualTradingSystem().cancel_order(1011770681))
+    print(ManualTradingSystem().sell_bitcoins_with_market_order(0.2182))
+    print(ManualTradingSystem().buy_bitcoins_with_market_order(0.02))

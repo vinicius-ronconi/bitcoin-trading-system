@@ -15,7 +15,7 @@ class BitfinexOrdersApiTestCase(TestCase):
         client = BitfinexClient(consts.Environment.PRODUCTION, consts.Symbol.BTCUSD, 'my_key', 'my_secret')
         self.orders_api = BitfinexOrdersApi(client)
 
-    def test_it_places_a_buy_order(self):
+    def test_it_places_a_limited_buy_order(self):
         self.orders_api.client.auth_api.place_order = mock.Mock(return_value={
             'id': 448364249,
             'symbol': 'btcusd',
@@ -48,7 +48,40 @@ class BitfinexOrdersApiTestCase(TestCase):
         self.assertIsNone(order_response.message_type)
         self.assertIsNone(order_response.order_rejection_reason)
 
-    def test_it_places_a_sell_order(self):
+    def test_it_places_a_market_buy_order(self):
+        self.orders_api.client.auth_api.place_order = mock.Mock(return_value={
+            'order_id': 1026178983,
+            'id': 1026178983,
+            'avg_execution_price': '0.0',
+            'is_cancelled': False,
+            'remaining_amount': '0.0313',
+            'exchange': 'bitfinex',
+            'symbol': 'btcusd',
+            'was_forced': False,
+            'is_hidden': False,
+            'type': 'exchange market',
+            'oco_order': None,
+            'price': '0.01',
+            'executed_amount': '0.0',
+            'timestamp': '1471637931.800969379',
+            'is_live': True,
+            'side': 'buy',
+            'original_amount': '0.0313'
+        })
+        order_response = self.orders_api.buy_bitcoins_with_market_order(quantity=0.0313)
+        self.assertIsInstance(order_response, beans.PlacedOrder)
+        self.assertEqual(order_response.order_id, '1026178983')
+        self.assertEqual(order_response.exec_id, '1026178983')
+        self.assertEqual(order_response.exec_type, 'exchange market')
+        self.assertEqual(order_response.order_status, consts.OrderStatus.NEW)
+        self.assertEqual(order_response.symbol, consts.Symbol.BTCUSD)
+        self.assertEqual(order_response.amount, 0.0313)
+        self.assertEqual(order_response.side, 'buy')
+        self.assertEqual(order_response.client_order_id, '1026178983')
+        self.assertIsNone(order_response.message_type)
+        self.assertIsNone(order_response.order_rejection_reason)
+
+    def test_it_places_a_limited_sell_order(self):
         self.orders_api.client.auth_api.place_order = mock.Mock(return_value={
             'id': 448364249,
             'symbol': 'btcusd',
@@ -78,6 +111,39 @@ class BitfinexOrdersApiTestCase(TestCase):
         self.assertEqual(order_response.amount, 0.0313)
         self.assertEqual(order_response.side, 'sell')
         self.assertEqual(order_response.client_order_id, '448364249')
+        self.assertIsNone(order_response.message_type)
+        self.assertIsNone(order_response.order_rejection_reason)
+
+    def test_it_places_a_market_sell_order(self):
+        self.orders_api.client.auth_api.place_order = mock.Mock(return_value={
+            'order_id': 1026166073,
+            'executed_amount': '0.0',
+            'avg_execution_price': '0.0',
+            'type': 'exchange market',
+            'is_hidden': False,
+            'timestamp': '1471637737.143232426',
+            'price': '600.0',
+            'side': 'sell',
+            'exchange': 'bitfinex',
+            'symbol': 'btcusd',
+            'is_live': True,
+            'id': 1026166073,
+            'is_cancelled': False,
+            'oco_order': None,
+            'original_amount': '0.0313',
+            'remaining_amount': '0.0313',
+            'was_forced': False
+        })
+        order_response = self.orders_api.sell_bitcoins_with_market_order(quantity=0.0313)
+        self.assertIsInstance(order_response, beans.PlacedOrder)
+        self.assertEqual(order_response.order_id, '1026166073')
+        self.assertEqual(order_response.exec_id, '1026166073')
+        self.assertEqual(order_response.exec_type, 'exchange market')
+        self.assertEqual(order_response.order_status, consts.OrderStatus.NEW)
+        self.assertEqual(order_response.symbol, consts.Symbol.BTCUSD)
+        self.assertEqual(order_response.amount, 0.0313)
+        self.assertEqual(order_response.side, 'sell')
+        self.assertEqual(order_response.client_order_id, '1026166073')
         self.assertIsNone(order_response.message_type)
         self.assertIsNone(order_response.order_rejection_reason)
 
