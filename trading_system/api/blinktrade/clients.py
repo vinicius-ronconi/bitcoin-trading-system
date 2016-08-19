@@ -13,6 +13,12 @@ class BlinkTradeClient(IClient):
         consts.Environment.TEST: 'https://api.testnet.blinktrade.com',
     }
 
+    open_api = NotImplemented
+    auth_api = NotImplemented
+    account = NotImplemented
+    market = NotImplemented
+    orders = NotImplemented
+
     def __init__(self, environment_type, currency, broker, key, secret_key):
         """
         :type environment_type: basestring

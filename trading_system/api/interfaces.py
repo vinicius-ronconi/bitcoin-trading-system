@@ -19,6 +19,9 @@ class IClient(object):
     """
     __metaclass__ = ABCMeta
 
+    open_api = NotImplemented
+    auth_api = NotImplemented
+
     account = NotImplemented
     market = NotImplemented
     orders = NotImplemented
