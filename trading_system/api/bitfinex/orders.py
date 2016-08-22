@@ -28,7 +28,6 @@ class BitfinexOrdersApi(IOrdersApi):
     def sell_bitcoins_with_limited_order(self, price, quantity):
         side = consts.ORDER_SIDE_TO_TEXT_MAP[consts.OrderSide.SELL]
         response = self.client.auth_api.place_order(str(quantity), str(price), side, self.ORDER_TYPE_LIMIT)
-        print(response)
         return self._make_placed_order_from_response(response)
 
     def sell_bitcoins_with_market_order(self, quantity):
@@ -36,7 +35,6 @@ class BitfinexOrdersApi(IOrdersApi):
         response = self.client.auth_api.place_order(
             str(quantity), price='0.0', side=side, ord_type=self.ORDER_TYPE_MARKET
         )
-        print(response)
         return self._make_placed_order_from_response(response)
 
     def cancel_order(self, order_id):
@@ -68,8 +66,6 @@ class BitfinexOrdersApi(IOrdersApi):
 
     @staticmethod
     def _get_str_value_or_none(source, key):
-        print(source)
-        print(key)
         value = source.get(key)
         return str(value) if value else None
 
