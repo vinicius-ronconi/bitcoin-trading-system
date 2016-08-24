@@ -53,7 +53,6 @@ class IMarketApi(object):
 class IOrdersApi(object):
     __metaclass__ = ABCMeta
 
-    # TODO: Add market orders to Blinktrade
     @abstractmethod
     def buy_bitcoins_with_limited_order(self, price, quantity):
         """
@@ -63,9 +62,23 @@ class IOrdersApi(object):
         """
 
     @abstractmethod
+    def buy_bitcoins_with_market_order(self, quantity):
+        """
+        :type quantity: float
+        :rtype: list[trading_system.api.beans.PlacedOrder|trading_system.api.beans.Balance]
+        """
+
+    @abstractmethod
     def sell_bitcoins_with_limited_order(self, price, quantity):
         """
         :type price: float
+        :type quantity: float
+        :rtype: list[trading_system.api.beans.PlacedOrder|trading_system.api.beans.Balance]
+        """
+
+    @abstractmethod
+    def sell_bitcoins_with_market_order(self, quantity):
+        """
         :type quantity: float
         :rtype: list[trading_system.api.beans.PlacedOrder|trading_system.api.beans.Balance]
         """

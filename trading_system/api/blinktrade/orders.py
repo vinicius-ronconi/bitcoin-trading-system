@@ -13,8 +13,16 @@ class BlinkTradeOrdersApi(IOrdersApi):
         response = self.client.auth_api.buy_bitcoins_with_limited_order(price, quantity)
         return self._parse_order_response(response)
 
+    def buy_bitcoins_with_market_order(self, quantity):
+        response = self.client.auth_api.buy_bitcoins_with_market_order(quantity)
+        return self._parse_order_response(response)
+
     def sell_bitcoins_with_limited_order(self, price, quantity):
         response = self.client.auth_api.sell_bitcoins_with_limited_order(price, quantity)
+        return self._parse_order_response(response)
+
+    def sell_bitcoins_with_market_order(self, quantity):
+        response = self.client.auth_api.sell_bitcoins_with_market_order(quantity)
         return self._parse_order_response(response)
 
     def _parse_order_response(self, response):
