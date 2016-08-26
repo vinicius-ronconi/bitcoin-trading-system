@@ -1,5 +1,6 @@
 from trading_system.api import beans
 from trading_system.api.interfaces import IOrdersApi
+from trading_system.api.exceptions import UnexpectedOrderResponse
 
 
 class BlinkTradeOrdersApi(IOrdersApi):
@@ -47,8 +48,15 @@ class BlinkTradeOrdersApi(IOrdersApi):
 
     @staticmethod
     def _get_str_value_or_none(source, key):
-        value = source.get(key)
-        return str(value) if value else None
+        try:
+            value = source.get(key)
+        except AttributeError:
+            UnexpectedOrderResponse(
+                'It was not possible to get {key} value from the response {content}'.format(key=key, content=source)
+            )
+
+        else:
+            return str(value) if value else None
 
     def _make_balance(self, balance):
         return beans.Balance(

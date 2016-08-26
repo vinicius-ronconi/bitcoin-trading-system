@@ -1,6 +1,7 @@
 from trading_system import consts
 from trading_system.api.beans import PlacedOrder
 from trading_system.api.interfaces import IOrdersApi
+from trading_system.api.exceptions import UnexpectedOrderResponse
 
 
 class BitfinexOrdersApi(IOrdersApi):
@@ -66,8 +67,14 @@ class BitfinexOrdersApi(IOrdersApi):
 
     @staticmethod
     def _get_str_value_or_none(source, key):
-        value = source.get(key)
-        return str(value) if value else None
+        try:
+            value = source.get(key)
+        except AttributeError:
+            raise UnexpectedOrderResponse(
+                'It was not possible to get {key} value from the response {content}'.format(key=key, content=source)
+            )
+        else:
+            return str(value) if value else None
 
     @staticmethod
     def _get_order_status(order):

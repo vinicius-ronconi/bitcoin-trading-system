@@ -2,6 +2,7 @@ import threading
 import traceback
 from datetime import datetime
 from requests.exceptions import ReadTimeout, ConnectionError
+from trading_system.api import exceptions
 
 
 class SystemExecutor(object):
@@ -18,6 +19,9 @@ class SystemExecutor(object):
             self.system.run()
         except (ReadTimeout, ConnectionError):
             pass
+        except exceptions.TradingSystemException as e:
+            curr = datetime.now()
+            print('{time} - {text}'.format(time=curr.strftime('%Y-%m-%d %H:%M:%S'), text=str(e)))
         except Exception as e:
             curr = datetime.now()
             print('{time} - {text} - {args}'.format(time=curr.strftime('%Y-%m-%d %H:%M:%S'), text=str(e), args=e.args))
