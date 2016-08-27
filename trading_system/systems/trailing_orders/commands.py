@@ -17,10 +17,8 @@ class BuyBitcoinsCommand(IOrderCommand):
         evaluate_func(last_quote)
 
     def _get_buy_operation_func(self):
-        return {
-            True: self._evaluate_last_quote_to_buy_bitcoins,
-            False: self._evaluate_last_quote_to_start_buying_track,
-        }[self.system.is_tracking]
+        return self._evaluate_last_quote_to_buy_bitcoins if self.system.is_tracking \
+            else self._evaluate_last_quote_to_start_buying_track
 
     def _evaluate_last_quote_to_buy_bitcoins(self, last_quote):
         if last_quote >= self.system.buy_price:
@@ -61,10 +59,8 @@ class SellBitcoinsCommand(IOrderCommand):
         if last_quote < self.system.stop_loss_price:
             return self._evaluate_stop_loss
 
-        return {
-            True: self._evaluate_last_quote_to_sell_bitcoins,
-            False: self._evaluate_last_quote_to_start_selling_track,
-        }[self.system.is_tracking]
+        return self._evaluate_last_quote_to_sell_bitcoins if self.system.is_tracking \
+            else self._evaluate_last_quote_to_start_selling_track
 
     def _evaluate_last_quote_to_sell_bitcoins(self, last_quote):
         if last_quote <= self.system.sell_price:
