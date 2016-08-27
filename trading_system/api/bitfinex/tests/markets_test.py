@@ -71,4 +71,4 @@ class BitfinexMarketApiTestCase(TestCase):
         self.assertEqual(trade_list[0].date, 1444266681)
         self.assertEqual(trade_list[0].price, 500.0)
         self.assertEqual(trade_list[0].amount, 1.5)
-        self.assertEqual(trade_list[0].side, 'sell')
+        self.assertEqual(trade_list[0].side, consts.OrderSide.SELL)

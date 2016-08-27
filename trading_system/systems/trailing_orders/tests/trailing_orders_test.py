@@ -90,7 +90,7 @@ class TrailingOrdersTestCase(TestCase):
         self.assertEqual(self.system.stop_loss_price, 90.0)
 
     def test_it_setup_buy_operation(self):
-        self._setup_next_operation('buy')
+        self._setup_next_operation(consts.OrderSide.BUY)
         self._setup_start_value(100)
         self._setup_reversal(1)
         self._setup_stop_loss(2)
@@ -106,7 +106,7 @@ class TrailingOrdersTestCase(TestCase):
         self.assertEqual(self.system.stop_loss_price, 98)
 
     def test_it_setup_sell_operation(self):
-        self._setup_next_operation('sell')
+        self._setup_next_operation(consts.OrderSide.SELL)
         self._setup_stop_value(100)
         self._setup_reversal(1)
         self._setup_stop_loss(2)
@@ -122,7 +122,7 @@ class TrailingOrdersTestCase(TestCase):
         self.assertEqual(self.system.stop_loss_price, 94.12)
 
     def test_it_sets_next_operation(self):
-        self._setup_next_operation('buy')
+        self._setup_next_operation(consts.OrderSide.BUY)
         self._setup_start_value(100)
         self._setup_reversal(1)
         self._setup_stop_loss(2)

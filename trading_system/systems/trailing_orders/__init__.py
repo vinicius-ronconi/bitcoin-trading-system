@@ -44,8 +44,8 @@ class TrailingOrders(ITradingSystem):
         print('---------------------------------------')
         next_operation = self._get_next_operation()
         setup_func = {
-            'buy': self._setup_to_buy,
-            'sell': self._setup_to_sell,
+            consts.OrderSide.BUY: self._setup_to_buy,
+            consts.OrderSide.SELL: self._setup_to_sell,
         }[next_operation]
 
         return setup_func()

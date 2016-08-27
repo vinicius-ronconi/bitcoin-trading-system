@@ -70,4 +70,4 @@ class MarketTestCase(TestCase):
         self.assertEqual(trade_list[0].date, 1467037014)
         self.assertEqual(trade_list[0].price, 2300.0)
         self.assertEqual(trade_list[0].amount, 0.02)
-        self.assertEqual(trade_list[0].side, 'sell')
+        self.assertEqual(trade_list[0].side, consts.OrderSide.SELL)
