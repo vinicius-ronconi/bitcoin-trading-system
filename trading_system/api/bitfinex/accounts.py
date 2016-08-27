@@ -1,5 +1,6 @@
 from trading_system.api.interfaces import IAccountApi
 from trading_system.api.beans import Balance
+from trading_system import consts
 
 
 class BitfinexAccountApi(IAccountApi):
@@ -14,8 +15,8 @@ class BitfinexAccountApi(IAccountApi):
         return self._make_balance(balance)
 
     def _make_balance(self, balance_list):
-        fiat_balance = self._get_currency_balance(balance_list, 'usd')
-        btc_balance = self._get_currency_balance(balance_list, 'btc')
+        fiat_balance = self._get_currency_balance(balance_list, consts.Currency.AMERICAN_DOLLAR.lower())
+        btc_balance = self._get_currency_balance(balance_list, consts.Currency.BITCOIN.lower())
         return Balance(
             currency=self._get_available_amount(fiat_balance),
             currency_locked=self._get_locked_amount(fiat_balance),

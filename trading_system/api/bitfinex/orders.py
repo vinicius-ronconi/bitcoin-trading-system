@@ -5,6 +5,8 @@ from trading_system.api.exceptions import UnexpectedOrderResponse
 
 
 class BitfinexOrdersApi(IOrdersApi):
+    ORDER_STATUS_CANCELLED = '4'
+    ORDER_STATUS_NEW = '0'
     ORDER_TYPE_LIMIT = 'exchange limit'
     ORDER_TYPE_MARKET = 'exchange market'
 
@@ -15,24 +17,24 @@ class BitfinexOrdersApi(IOrdersApi):
         self.client = client
 
     def buy_bitcoins_with_limited_order(self, price, quantity):
-        side = consts.ORDER_SIDE_TO_TEXT_MAP[consts.OrderSide.BUY]
+        side = consts.OrderSide.BUY
         response = self.client.auth_api.place_order(str(quantity), str(price), side, self.ORDER_TYPE_LIMIT)
         return self._make_placed_order_from_response(response)
 
     def buy_bitcoins_with_market_order(self, quantity):
-        side = consts.ORDER_SIDE_TO_TEXT_MAP[consts.OrderSide.BUY]
+        side = consts.OrderSide.BUY
         response = self.client.auth_api.place_order(
             str(quantity), price='0.01', side=side, ord_type=self.ORDER_TYPE_MARKET
         )
         return self._make_placed_order_from_response(response)
 
     def sell_bitcoins_with_limited_order(self, price, quantity):
-        side = consts.ORDER_SIDE_TO_TEXT_MAP[consts.OrderSide.SELL]
+        side = consts.OrderSide.SELL
         response = self.client.auth_api.place_order(str(quantity), str(price), side, self.ORDER_TYPE_LIMIT)
         return self._make_placed_order_from_response(response)
 
     def sell_bitcoins_with_market_order(self, quantity):
-        side = consts.ORDER_SIDE_TO_TEXT_MAP[consts.OrderSide.SELL]
+        side = consts.OrderSide.SELL
         response = self.client.auth_api.place_order(
             str(quantity), price='0.0', side=side, ord_type=self.ORDER_TYPE_MARKET
         )
@@ -48,9 +50,6 @@ class BitfinexOrdersApi(IOrdersApi):
         return orders[page * page_size: (page + 1) * page_size - 1]
 
     def _make_placed_order_from_response(self, response):
-        # TODO Check what is real global and what varies according to the exchange.
-        # TODO Probably create consts specific to each exchange and create a map to the global option
-        # TODO Examples: exec_type, order_status, order_side
         return PlacedOrder(
             order_id=self._get_str_value_or_none(response, 'order_id'),
             exec_id=str(response['id']),
@@ -76,10 +75,9 @@ class BitfinexOrdersApi(IOrdersApi):
         else:
             return str(value) if value else None
 
-    @staticmethod
-    def _get_order_status(order):
+    def _get_order_status(self, order):
         if order['is_cancelled']:
-            return consts.OrderStatus.CANCELLED
+            return self.ORDER_STATUS_CANCELLED
 
         if order['is_live']:
-            return consts.OrderStatus.NEW
+            return self.ORDER_STATUS_NEW
