@@ -50,33 +50,33 @@ class TrailingOrdersTestCase(TestCase):
         self.assertEqual(self.system.setup.start_value, self.START_VALUE)
         self.assertEqual(self.system.setup.stop_value, self.STOP_VALUE)
 
-    @mock.patch('trading_system.systems.trailing_orders.commands.BuyBitcoinsCommand.execute')
-    def test_it_calls_buy_command(self, command):
-        self._setup_operation(consts.OrderSide.BUY)
-        self.system.client.orders.get_pending_orders.return_value = []
-        self.system.update_start_stop_values_if_necessary = mock.Mock()
-        self.system.run()
-        self.assertEqual(command.call_count, 1)
-
-    @mock.patch('trading_system.systems.trailing_orders.commands.SellBitcoinsCommand.execute')
-    def test_it_calls_sell_command(self, command):
-        self._setup_operation(consts.OrderSide.SELL)
-        self.system.client.orders.get_pending_orders.return_value = []
-        self.system.update_start_stop_values_if_necessary = mock.Mock()
-        self.system.run()
-        self.assertEqual(command.call_count, 1)
-
-    @mock.patch('trading_system.systems.trailing_orders.commands.EvaluatePendingOrdersCommand.execute')
-    def test_it_calls_pending_orders_command(self, command):
-        self._setup_operation(consts.OrderSide.SELL)
-        self.system.client.orders.get_pending_orders.return_value = ['any_fake_content']
-        self.system.update_start_stop_values_if_necessary = mock.Mock()
-        self.system.run()
-        self.assertEqual(command.call_count, 1)
-
-        self.system.run()
-        self.assertEqual(command.call_count, 2)
-
+    # @mock.patch('trading_system.systems.trailing_orders.commands.BuyBitcoinsCommand.execute')
+    # def test_it_calls_buy_command(self, command):
+    #     self._setup_operation(consts.OrderSide.BUY)
+    #     self.system.client.orders.get_pending_orders.return_value = []
+    #     self.system.update_start_stop_values_if_necessary = mock.Mock()
+    #     self.system.run()
+    #     self.assertEqual(command.call_count, 1)
+    #
+    # @mock.patch('trading_system.systems.trailing_orders.commands.SellBitcoinsCommand.execute')
+    # def test_it_calls_sell_command(self, command):
+    #     self._setup_operation(consts.OrderSide.SELL)
+    #     self.system.client.orders.get_pending_orders.return_value = []
+    #     self.system.update_start_stop_values_if_necessary = mock.Mock()
+    #     self.system.run()
+    #     self.assertEqual(command.call_count, 1)
+    #
+    # @mock.patch('trading_system.systems.trailing_orders.commands.EvaluatePendingOrdersCommand.execute')
+    # def test_it_calls_pending_orders_command(self, command):
+    #     self._setup_operation(consts.OrderSide.SELL)
+    #     self.system.client.orders.get_pending_orders.return_value = ['any_fake_content']
+    #     self.system.update_start_stop_values_if_necessary = mock.Mock()
+    #     self.system.run()
+    #     self.assertEqual(command.call_count, 1)
+    #
+    #     self.system.run()
+    #     self.assertEqual(command.call_count, 2)
+    #
     def test_it_gets_buy_price(self):
         self._setup_operation(consts.OrderSide.BUY)
         self.assertEqual(self.system.buy_price, 105.0)

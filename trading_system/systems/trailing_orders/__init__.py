@@ -38,6 +38,7 @@ class TrailingOrders(ITradingSystem):
         print('')
         print('    - Gross Margin: {}'.format(self._get_rounded_value(((self.sell_price / self.buy_price) - 1) * 100)))
 
+    # TODO: Create a separate object to perform setup
     def _setup_values(self):
         print('---------------------------------------')
         print('-----  SETUP THE TRAILING ORDERS  -----')
@@ -175,13 +176,22 @@ class TrailingOrders(ITradingSystem):
         return self._get_rounded_value(stop_loss_price)
 
     def run(self):
-        self.pending_orders = self.client.orders.get_pending_orders(0, 2)
-        self.balance = self.client.account.get_balance()
-        current_ticker = self.client.market.get_ticker()
+        self.pending_orders = self._get_pending_orders()
+        self.balance = self._get_balance()
+        current_ticker = self._get_current_ticker()
         command = self._get_command()
         command(self).execute(current_ticker.last_value)
 
         self.update_start_stop_values_if_necessary(current_ticker.last_value)
+
+    def _get_pending_orders(self):
+        return self.client.orders.get_pending_orders(page=0, page_size=5)
+
+    def _get_balance(self):
+        return self.client.account.get_balance()
+
+    def _get_current_ticker(self):
+        return self.client.market.get_ticker()
 
     def _get_command(self):
         if self.pending_orders:
