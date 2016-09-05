@@ -4,7 +4,7 @@ import mock
 
 from trading_system import consts
 from trading_system.api.beans import Ticker
-from trading_system.systems.trailing_orders import TrailingOrders
+from trading_system.systems.trailing_orders.system import TrailingOrders
 from trading_system.systems.trailing_orders import beans
 
 
@@ -20,7 +20,7 @@ class TrailingOrdersTestCase(TestCase):
             profit=2,
         ))
         setup_patcher = mock.patch(
-            'trading_system.systems.trailing_orders.TrailingOrders._setup_values', self.mocked_setup
+            'trading_system.systems.trailing_orders.system.SystemBootstrap.get_initial_setup', self.mocked_setup
         )
         self.addCleanup(setup_patcher.stop)
         setup_patcher.start()
@@ -32,7 +32,7 @@ class TrailingOrdersTestCase(TestCase):
 
         self.set_next_operation = mock.MagicMock()
         next_operation_patcher = mock.patch(
-            'trading_system.systems.trailing_orders.TrailingOrders.set_next_operation', self.set_next_operation
+            'trading_system.systems.trailing_orders.system.TrailingOrders.set_next_operation', self.set_next_operation
         )
         self.addCleanup(next_operation_patcher.stop)
         next_operation_patcher.start()
