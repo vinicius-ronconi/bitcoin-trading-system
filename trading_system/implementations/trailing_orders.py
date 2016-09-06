@@ -1,6 +1,6 @@
 from trading_system.api.factory import ApiClientFactory
 from trading_system.systems.executor import SystemExecutor
-from trading_system.systems.trailing_orders import TrailingOrders
+from trading_system.systems.trailing_orders.system import TrailingOrders
 
 
 class TrailingOrderImpl(object):
