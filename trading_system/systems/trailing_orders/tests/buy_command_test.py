@@ -5,28 +5,24 @@ import mock
 from trading_system import consts
 from trading_system.api.beans import Ticker
 from trading_system.systems.trailing_orders.system import TrailingOrders
-from trading_system.systems.trailing_orders import beans
+from trading_system.systems.trailing_orders import beans, factory
 
 
 class TrailingOrdersTestCase(TestCase):
     def setUp(self):
-        self.mocked_setup = mock.MagicMock(return_value=beans.TrailingOrderSetup(
-            next_operation=consts.OrderSide.BUY,
-            start_value=100,
-            stop_value=200,
-            reversal=10,
-            stop_loss=20,
-            operational_cost=1,
-            profit=2,
-        ))
-        setup_patcher = mock.patch(
-            'trading_system.systems.trailing_orders.system.SystemBootstrap.get_initial_setup', self.mocked_setup
-        )
-        self.addCleanup(setup_patcher.stop)
-        setup_patcher.start()
-
         client = mock.MagicMock()
-        self.system = TrailingOrders(client)
+        bootstrap = factory.TrailingOrdersFactory().make_fake_bootstrap(
+            beans.TrailingOrderSetup(
+                next_operation=consts.OrderSide.BUY,
+                start_value=100,
+                stop_value=200,
+                reversal=10,
+                stop_loss=20,
+                operational_cost=1,
+                profit=2,
+            )
+        )
+        self.system = TrailingOrders(client, bootstrap)
         self.system.log_info = mock.MagicMock()
         self.system._get_pending_orders = mock.MagicMock(return_value=[])
 
