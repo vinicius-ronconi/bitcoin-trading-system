@@ -38,7 +38,8 @@ class TrackingToSellState(ISystemState):
 
 
 class PendingToSellState(ISystemState):
-    # If last_quote < stop_loss_price -> update values, Cancel Current Order, Place MARKET Order and Change State to PendingToSellState
+    # If last_quote < stop_loss_price -> update values, Cancel Current Order,
+    #   Place MARKET Order and Change State to PendingToSellState
     # If no pending order was found -> Change State to WaitingToBuyState
     def evaluate_last_quote(self, last_quote):
         super().evaluate_last_quote(last_quote)
