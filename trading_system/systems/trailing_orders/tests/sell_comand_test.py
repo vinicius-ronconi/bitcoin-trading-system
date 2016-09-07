@@ -22,8 +22,12 @@ class TrailingOrdersTestCase(TestCase):
                 profit=2,
             )
         )
+
+        logging_patch = mock.patch('trading_system.systems.trailing_orders.system.logging')
+        self.addCleanup(logging_patch.stop)
+        logging_patch.start()
+
         self.system = TrailingOrders(client, bootstrap)
-        self.system.log_info = mock.MagicMock()
         self.system._get_pending_orders = mock.MagicMock(return_value=[])
 
         self.set_next_operation = mock.MagicMock()

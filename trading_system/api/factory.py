@@ -1,7 +1,6 @@
-from trading_system import consts
+from trading_system import consts, settings
 from trading_system.api.bitfinex.clients import BitfinexClient
 from trading_system.api.blinktrade.clients import BlinkTradeClient
-from trading_system.systems import settings
 
 
 class ApiClientFactory(object):

@@ -2,7 +2,7 @@ import operator
 
 from trading_system import consts
 from trading_system.api.bitfinex.clients import BitfinexClient
-from trading_system.systems.settings import BITFINEX_KEY, BITFINEX_SECRET
+from trading_system.settings import BITFINEX_KEY, BITFINEX_SECRET
 
 
 class ManualTradingSystem(object):

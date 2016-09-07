@@ -1,9 +1,33 @@
-from datetime import datetime
+import logging
+import logging.handlers
+import os
 
-from trading_system import consts
+from trading_system import consts, settings
 from trading_system.systems.interfaces import ITradingSystem
 from trading_system.systems.trailing_orders import beans, commands, utils
 from trading_system.utils import get_rounded_decimal_value
+
+APP_LEVEL = 60
+logging.addLevelName(APP_LEVEL, 'APP')
+logger = logging.getLogger('')
+logger.setLevel(logging.ERROR)
+
+os.makedirs(settings.LOG_DIR, exist_ok=True)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
+file_handler = logging.handlers.RotatingFileHandler(
+    filename='{0}/{1}'.format(settings.LOG_DIR, 'trailing_orders_log.txt'),
+    maxBytes=(1024*1024*10),
+    backupCount=7
+)
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
+console_handler = logging.StreamHandler()
+console_handler.setFormatter(formatter)
+
+logger.addHandler(logging.StreamHandler())
+logger.addHandler(console_handler)
 
 
 class TrailingOrders(ITradingSystem):
@@ -24,22 +48,21 @@ class TrailingOrders(ITradingSystem):
         :type bootstrap: trading_system.systems.trailing_orders.interfaces.IBootStrap
         """
         self.client = client
-        print('Heyyyy ya')
         self.setup = bootstrap.get_initial_setup()
         self.is_tracking = False
 
-        print('System started with the following values:')
-        print('    - Next Operation: {}'.format(self.setup.next_operation))
-        print('    - Start value: {}'.format(self.setup.start_value))
-        print('    - Buy Price: {}'.format(self.buy_price))
-        print('    - Sell Price: {}'.format(self.sell_price))
-        print('    - Stop value: {}'.format(self.setup.stop_value))
-        print('    - Reversal %: {}'.format(self.setup.reversal))
-        print('')
-        print('    - Stop Loss %: {}'.format(self.setup.stop_loss))
-        print('    - Stop Loss Price: {}'.format(self.stop_loss_price))
-        print('')
-        print('    - Gross Margin: {}'.format(
+        self.log_info('System started with the following values:')
+        self.log_info('    Next Operation: {}'.format(self.setup.next_operation))
+        self.log_info('    Start value: {}'.format(self.setup.start_value))
+        self.log_info('    Buy Price: {}'.format(self.buy_price))
+        self.log_info('    Sell Price: {}'.format(self.sell_price))
+        self.log_info('    Stop value: {}'.format(self.setup.stop_value))
+        self.log_info('    Reversal %: {}'.format(self.setup.reversal))
+        self.log_info('')
+        self.log_info('    Stop Loss %: {}'.format(self.setup.stop_loss))
+        self.log_info('    Stop Loss Price: {}'.format(self.stop_loss_price))
+        self.log_info('')
+        self.log_info('    Gross Margin: {}'.format(
             get_rounded_decimal_value(((self.sell_price / self.buy_price) - 1) * 100))
         )
 
@@ -107,8 +130,7 @@ class TrailingOrders(ITradingSystem):
 
     @staticmethod
     def log_info(text):
-        curr = datetime.now()
-        print('{time} - {text}'.format(time=curr.strftime('%Y-%m-%d %H:%M:%S'), text=text))
+        logging.log(APP_LEVEL, text)
 
     def set_next_operation(self, next_operation):
         self.setup = beans.TrailingOrderSetup(

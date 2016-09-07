@@ -84,4 +84,8 @@ class TrailingOrdersTestCase(TestCase):
             )
         )
 
+        logging_patch = mock.patch('trading_system.systems.trailing_orders.system.logging')
+        self.addCleanup(logging_patch.stop)
+        logging_patch.start()
+
         self.system = TrailingOrders(client, bootstrap)

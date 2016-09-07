@@ -4,6 +4,7 @@ from trading_system.systems.trailing_orders.interfaces import ISystemState
 class WaitingToBuyState(ISystemState):
     # If last_quote <= start_price -> update values and Change State to TrackingToBuyState
     # If last_quote > stop_price -> update_values
+    # Adjust start value when it is lower than the mininum value in last 24 hours
     def evaluate_last_quote(self, last_quote):
         super().evaluate_last_quote(last_quote)
 
