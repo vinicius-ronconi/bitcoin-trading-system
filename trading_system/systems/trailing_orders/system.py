@@ -25,8 +25,6 @@ logger.addHandler(file_handler)
 
 console_handler = logging.StreamHandler()
 console_handler.setFormatter(formatter)
-
-logger.addHandler(logging.StreamHandler())
 logger.addHandler(console_handler)
 
 
