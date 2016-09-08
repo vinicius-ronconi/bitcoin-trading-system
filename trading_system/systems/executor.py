@@ -1,6 +1,7 @@
 import threading
 import traceback
 from datetime import datetime
+from json import JSONDecodeError
 from requests.exceptions import ReadTimeout, ConnectionError
 from trading_system.api import exceptions
 
@@ -17,7 +18,7 @@ class SystemExecutor(object):
     def execute(self):
         try:
             self.system.run()
-        except (ReadTimeout, ConnectionError):
+        except (ReadTimeout, ConnectionError, JSONDecodeError):
             pass
         except exceptions.TradingSystemException as e:
             curr = datetime.now()
