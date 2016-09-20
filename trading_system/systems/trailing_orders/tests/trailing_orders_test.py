@@ -3,6 +3,7 @@ from unittest import TestCase
 import mock
 
 from trading_system import consts
+from trading_system.api.beans import PlacedOrder, Ticker
 from trading_system.systems.trailing_orders.system import TrailingOrders
 from trading_system.systems.trailing_orders.beans import TrailingOrderSetup
 from trading_system.systems.trailing_orders.factory import TrailingOrdersFactory
@@ -17,38 +18,13 @@ class TrailingOrdersTestCase(TestCase):
     system_setup = NotImplemented
     system = NotImplemented
 
-    def test_it_update_start_stop_values_during_buy_operation(self):
-        self._setup_operation(consts.OrderSide.BUY)
-        last_quote = self.START_VALUE / 2
-        self.system.update_start_stop_values_if_necessary(last_quote)
-        self.assertEqual(self.system.setup.start_value, last_quote)
-        self.assertEqual(self.system.setup.stop_value, self.STOP_VALUE * (last_quote / self.START_VALUE))
-
-    def test_it_update_start_stop_values_during_sell_operation(self):
-        self._setup_operation(consts.OrderSide.SELL)
-        last_quote = self.STOP_VALUE * 2
-        self.system.update_start_stop_values_if_necessary(last_quote)
-        self.assertEqual(self.system.setup.start_value, self.START_VALUE * 2)
-        self.assertEqual(self.system.setup.stop_value, last_quote)
-
-    def test_it_does_not_update_start_stop_values(self):
-        self._setup_operation(consts.OrderSide.BUY)
-        last_quote = self.STOP_VALUE * 2
-        self.system.update_start_stop_values_if_necessary(last_quote)
-        self.assertEqual(self.system.setup.start_value, self.START_VALUE)
-        self.assertEqual(self.system.setup.stop_value, self.STOP_VALUE)
-
-        self._setup_operation(consts.OrderSide.SELL)
-        last_quote = (self.START_VALUE + self.STOP_VALUE) / 2
-        self.system.update_start_stop_values_if_necessary(last_quote)
-        self.assertEqual(self.system.setup.start_value, self.START_VALUE)
-        self.assertEqual(self.system.setup.stop_value, self.STOP_VALUE)
-
-        self._setup_operation(consts.OrderSide.SELL)
-        last_quote = self.START_VALUE / 2
-        self.system.update_start_stop_values_if_necessary(last_quote)
-        self.assertEqual(self.system.setup.start_value, self.START_VALUE)
-        self.assertEqual(self.system.setup.stop_value, self.STOP_VALUE)
+    # def test_it_does_not_update_start_stop_values(self):
+    #     self._setup_operation(consts.OrderSide.SELL)
+    #     # last_quote = self.START_VALUE / 2
+    #     self.system.run()
+    #     # self.system.update_start_stop_values_if_necessary(last_quote)
+    #     self.assertEqual(self.system.setup.start_value, self.START_VALUE)
+    #     self.assertEqual(self.system.setup.stop_value, self.STOP_VALUE)
 
     def test_it_gets_buy_price(self):
         self._setup_operation(consts.OrderSide.BUY)
@@ -62,13 +38,41 @@ class TrailingOrdersTestCase(TestCase):
         self._setup_operation(consts.OrderSide.SELL)
         self.assertEqual(self.system.stop_loss_price, 90.0)
 
-    def test_it_sets_next_operation(self):
+    def test_it_gets_pending_orders(self):
         self._setup_operation(consts.OrderSide.BUY)
-        self.system.set_next_operation(consts.OrderSide.SELL)
-        self.assertEqual(self.system.setup.next_operation, consts.OrderSide.SELL)
+        self.system.client.orders.get_pending_orders.return_value = [
+            PlacedOrder(
+                order_id='my_order_id',
+                exec_id='my_exec_id',
+                exec_type='exec_type',
+                order_status='order_status',
+                price=100.0,
+                symbol='BTCUSD',
+                amount=1.0,
+                message_type=None,
+                order_rejection_reason=None,
+                side='buy',
+                client_order_id='my_order_id'
+            )
+        ]
+        pending_orders = self.system.get_pending_orders()
+        self.assertIsInstance(pending_orders, list)
+        self.assertIsInstance(pending_orders[0], PlacedOrder)
 
-        self.system.set_next_operation(consts.OrderSide.BUY)
-        self.assertEqual(self.system.setup.next_operation, consts.OrderSide.BUY)
+    def test_it_gets_current_ticker(self):
+        self._setup_operation(consts.OrderSide.BUY)
+        self.system.client.market.get_ticker.return_value = Ticker(
+            currency_pair='BTCBRL',
+            last_value=100.0,
+            highest_value=120.0,
+            lowest_value=100.0,
+            best_sell_order=110.0,
+            best_buy_order=105.0,
+            volume_btc=100.0,
+            volume_currency=11000.0
+        )
+        ticker = self.system.get_current_ticker()
+        self.assertIsInstance(ticker, Ticker)
 
     def _setup_operation(self, next_operation):
         client = mock.Mock()

@@ -3,7 +3,7 @@ from unittest import TestCase
 import mock
 
 from trading_system import consts
-from trading_system.systems.trailing_orders.bootstrap import ManualInputBootstrap
+from trading_system.systems.trailing_orders.factory import TrailingOrdersFactory
 
 
 class ManualInputBootStrapTestCase(TestCase):
@@ -16,13 +16,15 @@ class ManualInputBootStrapTestCase(TestCase):
     def test_it_setup_buy_operation(self):
         self._setup_next_operation(consts.OrderSide.BUY)
         self._setup_start_value(100)
-        initial_setup = ManualInputBootstrap().get_initial_setup()
+        bootstrap = TrailingOrdersFactory().make_input_bootstrap()
+        initial_setup = bootstrap.get_initial_setup()
         self.assertEqual(initial_setup.stop_value, 104.06)
 
     def test_it_setup_sell_operation(self):
         self._setup_next_operation(consts.OrderSide.SELL)
         self._setup_stop_value(100)
-        initial_setup = ManualInputBootstrap().get_initial_setup()
+        bootstrap = TrailingOrdersFactory().make_input_bootstrap()
+        initial_setup = bootstrap.get_initial_setup()
         self.assertEqual(initial_setup.start_value, 96.05)
 
     def _setup_next_operation(self, next_operation):

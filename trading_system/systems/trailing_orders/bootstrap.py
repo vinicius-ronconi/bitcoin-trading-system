@@ -28,9 +28,9 @@ class ManualInputBootstrap(IBootStrap):
     def _setup_to_buy(self):
         start_value = self._get_start_value()
         reversal = self._get_trend_reversal()
-        stop_loss = self._get_stop_loss()
         operational_cost = self._get_operational_cost()
         profit = self._get_profit()
+        stop_loss = self._get_stop_loss()
 
         buy_price = utils.get_buy_price(start_value, reversal)
         sell_price = buy_price * (1 + ((operational_cost + profit) / 100))
@@ -43,9 +43,9 @@ class ManualInputBootstrap(IBootStrap):
     def _setup_to_sell(self):
         stop_value = self._get_stop_value()
         reversal = self._get_trend_reversal()
-        stop_loss = self._get_stop_loss()
         operational_cost = self._get_operational_cost()
         profit = self._get_profit()
+        stop_loss = self._get_stop_loss()
 
         sell_price = utils.get_sell_price(stop_value, reversal)
         buy_price = sell_price * (1 - ((operational_cost + profit) / 100))
