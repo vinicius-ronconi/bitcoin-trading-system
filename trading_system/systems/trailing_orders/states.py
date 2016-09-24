@@ -32,20 +32,20 @@ class WaitingToBuyState(ISystemState):
         )
 
     def _update_setup_when_last_quote_higher_than_stop_value(self, last_quote):
-        update_system_setup(self.system, update_factor=last_quote / self.system.setup.stop_value)
         self.system.log_info(
             'Updating setup because last quote ({}) > stop value ({}).'.format(last_quote, self.system.setup.stop_value)
         )
+        update_system_setup(self.system, update_factor=last_quote / self.system.setup.stop_value)
         self.system.print_current_values()
 
     def _update_setup_when_start_value_lower_than_24_hours_minimum(self):
-        update_system_setup(
-            self.system, update_factor=self.system.current_ticker.lowest_value / self.system.setup.start_value
-        )
         self.system.log_info(
             'Updating setup because start value ({}) < lowest quote in 24hrs ({}).'.format(
                 self.system.setup.start_value, self.system.current_ticker.lowest_value
             )
+        )
+        update_system_setup(
+            self.system, update_factor=self.system.current_ticker.lowest_value / self.system.setup.start_value
         )
         self.system.print_current_values()
 
@@ -66,12 +66,12 @@ class TrackingToBuyState(ISystemState):
             self._buy_bitcoins(last_quote)
 
     def _update_setup(self, last_quote):
-        update_system_setup(self.system, update_factor=last_quote / self.system.setup.start_value)
         self.system.log_info(
             'Updating setup because last quote ({}) < start value ({}).'.format(
                 last_quote, self.system.setup.start_value
             )
         )
+        update_system_setup(self.system, update_factor=last_quote / self.system.setup.start_value)
         self.system.print_current_values()
 
     def _buy_bitcoins(self, last_quote):
@@ -158,12 +158,12 @@ class TrackingToSellState(ISystemState):
             self._sell_bitcoins(last_quote)
 
     def _update_setup_when_last_quote_was_higher_than_stop_value(self, last_quote):
-        update_system_setup(self.system, update_factor=last_quote / self.system.setup.stop_value)
         self.system.log_info(
             'Updating setup because last quote ({}) > stop value ({}).'.format(
                 last_quote, self.system.setup.stop_value
             )
         )
+        update_system_setup(self.system, update_factor=last_quote / self.system.setup.stop_value)
         self.system.print_current_values()
 
     def _sell_bitcoins(self, last_quote):
