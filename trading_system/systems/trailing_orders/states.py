@@ -12,6 +12,7 @@ class WaitingToBuyState(ISystemState):
         self.system = system
         self.system.is_tracking = False
         self.system.set_next_operation(consts.OrderSide.BUY)
+        self.system.log_info('Current State is WaitingToBuy')
 
     def evaluate_last_quote(self, last_quote):
         if last_quote <= self.system.setup.start_value:
@@ -58,6 +59,7 @@ class TrackingToBuyState(ISystemState):
         self.system = system
         self.system.is_tracking = True
         self.system.set_next_operation(consts.OrderSide.BUY)
+        self.system.log_info('Current State is TrackingToBuy')
 
     def evaluate_last_quote(self, last_quote):
         if last_quote < self.system.setup.start_value:
@@ -92,6 +94,7 @@ class PendingToBuyState(ISystemState):
         """
         self.system = system
         self.system.is_tracking = False
+        self.system.log_info('Current State is PendingToBuy')
 
     def evaluate_last_quote(self, last_quote):
         pending_orders = self.system.get_pending_orders()
@@ -121,6 +124,7 @@ class WaitingToSellState(ISystemState):
         self.system = system
         self.system.is_tracking = False
         self.system.set_next_operation(consts.OrderSide.SELL)
+        self.system.log_info('Current State is WaitingToSell')
 
     def evaluate_last_quote(self, last_quote):
         if last_quote >= self.system.setup.stop_value:
@@ -148,6 +152,7 @@ class TrackingToSellState(ISystemState):
         self.system = system
         self.system.is_tracking = True
         self.system.set_next_operation(consts.OrderSide.SELL)
+        self.system.log_info('Current State is TrackingToSell')
 
     def evaluate_last_quote(self, last_quote):
         if last_quote > self.system.setup.stop_value:
@@ -183,6 +188,7 @@ class PendingToSellState(ISystemState):
         self.system = system
         self.next_state = next_state
         self.system.is_tracking = False
+        self.system.log_info('Current State is PendingToSell')
 
     # If last_quote < stop_loss_price -> update values, Cancel Current Order,
     #   Place MARKET Order and Change State to PendingToSellState
