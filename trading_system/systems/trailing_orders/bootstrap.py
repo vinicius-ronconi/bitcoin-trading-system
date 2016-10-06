@@ -3,6 +3,7 @@ from trading_system.systems.trailing_orders import utils, beans
 from trading_system.systems.trailing_orders.interfaces import IBootStrap
 from trading_system.utils import get_rounded_decimal_value
 
+
 class ManualInputBootstrap(IBootStrap):
     def get_initial_setup(self):
         print('---------------------------------------')
