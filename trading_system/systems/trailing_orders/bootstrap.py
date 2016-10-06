@@ -1,7 +1,7 @@
 from trading_system import consts
 from trading_system.systems.trailing_orders import utils, beans
 from trading_system.systems.trailing_orders.interfaces import IBootStrap
-
+from trading_system.utils import get_rounded_decimal_value
 
 class ManualInputBootstrap(IBootStrap):
     def get_initial_setup(self):
@@ -33,8 +33,8 @@ class ManualInputBootstrap(IBootStrap):
         stop_loss = self._get_stop_loss()
 
         buy_price = utils.get_buy_price(start_value, reversal)
-        sell_price = buy_price * (1 + ((operational_cost + profit) / 100))
-        stop_value = (sell_price * 100) / (100 - reversal)
+        sell_price = get_rounded_decimal_value(buy_price * (1 + ((operational_cost + profit) / 100)))
+        stop_value = get_rounded_decimal_value((sell_price * 100) / (100 - reversal))
 
         return beans.TrailingOrderSetup.make(
             consts.OrderSide.BUY, start_value, stop_value, reversal, stop_loss, operational_cost, profit
@@ -48,8 +48,8 @@ class ManualInputBootstrap(IBootStrap):
         stop_loss = self._get_stop_loss()
 
         sell_price = utils.get_sell_price(stop_value, reversal)
-        buy_price = sell_price * (1 - ((operational_cost + profit) / 100))
-        start_value = (buy_price * 100) / (100 + reversal)
+        buy_price = get_rounded_decimal_value(sell_price * (1 - ((operational_cost + profit) / 100)))
+        start_value = get_rounded_decimal_value((buy_price * 100) / (100 + reversal))
         return beans.TrailingOrderSetup.make(
             consts.OrderSide.SELL, start_value, stop_value, reversal, stop_loss, operational_cost, profit
         )

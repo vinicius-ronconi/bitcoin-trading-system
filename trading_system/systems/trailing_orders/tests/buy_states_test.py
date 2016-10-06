@@ -17,14 +17,14 @@ class TrailingOrdersTestCase(TestCase):
     OPERATIONAL_COST = 1
     PROFIT = 2
 
-    INITIAL_SETUP = beans.TrailingOrderSetup(
-        next_operation=consts.OrderSide.BUY,
-        start_value=START_VALUE,
-        stop_value=STOP_VALUE,
-        reversal=REVERSAL,
-        stop_loss=STOP_LOSS,
-        operational_cost=OPERATIONAL_COST,
-        profit=PROFIT,
+    INITIAL_SETUP = beans.TrailingOrderSetup.make(
+        consts.OrderSide.BUY,
+        START_VALUE,
+        STOP_VALUE,
+        REVERSAL,
+        STOP_LOSS,
+        OPERATIONAL_COST,
+        PROFIT,
     )
 
     def setUp(self):

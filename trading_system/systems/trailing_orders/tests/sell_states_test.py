@@ -16,29 +16,19 @@ class TrailingOrdersTestCase(TestCase):
     OPERATIONAL_COST = 1
     PROFIT = 2
 
-    INITIAL_SETUP = beans.TrailingOrderSetup(
-        next_operation=consts.OrderSide.BUY,
-        start_value=START_VALUE,
-        stop_value=STOP_VALUE,
-        reversal=REVERSAL,
-        stop_loss=STOP_LOSS,
-        operational_cost=OPERATIONAL_COST,
-        profit=PROFIT,
+    INITIAL_SETUP = beans.TrailingOrderSetup.make(
+        consts.OrderSide.BUY,
+        START_VALUE,
+        STOP_VALUE,
+        REVERSAL,
+        STOP_LOSS,
+        OPERATIONAL_COST,
+        PROFIT,
     )
 
     def setUp(self):
         client = mock.MagicMock()
-        bootstrap = factory.TrailingOrdersFactory().make_fake_bootstrap(
-            beans.TrailingOrderSetup(
-                next_operation=consts.OrderSide.SELL,
-                start_value=100,
-                stop_value=200,
-                reversal=10,
-                stop_loss=20,
-                operational_cost=1,
-                profit=2,
-            )
-        )
+        bootstrap = factory.TrailingOrdersFactory().make_fake_bootstrap(self.INITIAL_SETUP)
 
         logging_patch = mock.patch('trading_system.systems.trailing_orders.system.logging')
         self.addCleanup(logging_patch.stop)

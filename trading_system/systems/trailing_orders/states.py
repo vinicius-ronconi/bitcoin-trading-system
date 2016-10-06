@@ -23,7 +23,7 @@ class WaitingToBuyState(ISystemState):
             self._update_setup_when_start_value_lower_than_24_hours_minimum()
 
     def _start_tracking(self, last_quote):
-        update_system_setup(self.system, update_factor=last_quote / self.system.setup.start_value)
+        update_system_setup_by_update_factor(self.system, update_factor=last_quote / self.system.setup.start_value)
         self.system.set_state(TrackingToBuyState(self.system))
         self.system.log_info(
             'Tracking values to place a BUY order after quote become lower than {start}. '
@@ -36,7 +36,7 @@ class WaitingToBuyState(ISystemState):
         self.system.log_info(
             'Updating setup because last quote ({}) > stop value ({}).'.format(last_quote, self.system.setup.stop_value)
         )
-        update_system_setup(self.system, update_factor=last_quote / self.system.setup.stop_value)
+        update_system_setup_by_update_factor(self.system, update_factor=last_quote / self.system.setup.stop_value)
         self.system.print_current_values()
 
     def _update_setup_when_start_value_lower_than_24_hours_minimum(self):
@@ -45,8 +45,15 @@ class WaitingToBuyState(ISystemState):
                 self.system.setup.start_value, self.system.current_ticker.lowest_value
             )
         )
-        update_system_setup(
-            self.system, update_factor=self.system.current_ticker.lowest_value / self.system.setup.start_value
+        update_factor = self.system.current_ticker.lowest_value / self.system.setup.start_value
+        self.system.log_info('Start value = {}'.format(self.system.setup.start_value))
+        self.system.log_info('Stop value = {}'.format(self.system.setup.stop_value))
+        self.system.log_info('Lowest value = {}'.format(self.system.current_ticker.lowest_value))
+        self.system.log_info('Update factor = {}'.format(update_factor))
+        update_system_setup_with_values(
+            system=self.system,
+            start_value=self.system.current_ticker.lowest_value,
+            stop_value=get_rounded_decimal_value(self.system.setup.stop_value * update_factor)
         )
         self.system.print_current_values()
 
@@ -73,7 +80,7 @@ class TrackingToBuyState(ISystemState):
                 last_quote, self.system.setup.start_value
             )
         )
-        update_system_setup(self.system, update_factor=last_quote / self.system.setup.start_value)
+        update_system_setup_by_update_factor(self.system, update_factor=last_quote / self.system.setup.start_value)
         self.system.print_current_values()
 
     def _buy_bitcoins(self, last_quote):
@@ -133,7 +140,7 @@ class WaitingToSellState(ISystemState):
             stop_loss(self.system, last_quote)
 
     def _start_tracking(self, last_quote):
-        update_system_setup(self.system, update_factor=last_quote / self.system.setup.stop_value)
+        update_system_setup_by_update_factor(self.system, update_factor=last_quote / self.system.setup.stop_value)
         self.system.set_state(TrackingToSellState(self.system))
         self.system.log_info(
             'Tracking values to place a SELL order after quote become lower than {stop}. '
@@ -168,7 +175,7 @@ class TrackingToSellState(ISystemState):
                 last_quote, self.system.setup.stop_value
             )
         )
-        update_system_setup(self.system, update_factor=last_quote / self.system.setup.stop_value)
+        update_system_setup_by_update_factor(self.system, update_factor=last_quote / self.system.setup.stop_value)
         self.system.print_current_values()
 
     def _sell_bitcoins(self, last_quote):
@@ -219,27 +226,40 @@ class PendingToSellState(ISystemState):
         )
 
 
-def update_system_setup(system, update_factor):
+def update_system_setup_by_update_factor(system, update_factor):
     """
     :type system: trading_system.systems.trailing_orders.interfaces.ITrailingOrdersSystem
     :type update_factor: float
     """
+    update_system_setup_with_values(
+        system,
+        get_rounded_decimal_value(system.setup.start_value * update_factor),
+        get_rounded_decimal_value(system.setup.stop_value * update_factor)
+    )
+
+
+def update_system_setup_with_values(system, start_value, stop_value):
+    """
+    :type system: trading_system.systems.trailing_orders.interfaces.ITrailingOrdersSystem
+    :type start_value: float
+    :type stop_value: float
+    """
     system.update_setup(
-        TrailingOrderSetup(
-            next_operation=system.setup.next_operation,
-            start_value=get_rounded_decimal_value(system.setup.start_value * update_factor),
-            stop_value=get_rounded_decimal_value(system.setup.stop_value * update_factor),
-            reversal=system.setup.reversal,
-            stop_loss=system.setup.stop_loss,
-            operational_cost=system.setup.operational_cost,
-            profit=system.setup.profit,
+        TrailingOrderSetup.make(
+            system.setup.next_operation,
+            start_value,
+            stop_value,
+            system.setup.reversal,
+            system.setup.stop_loss,
+            system.setup.operational_cost,
+            system.setup.profit,
         )
     )
 
 
 def stop_loss(system, last_quote):
     system.client.orders.sell_bitcoins_with_market_order(system.balance.btc)
-    update_system_setup(system, update_factor=last_quote / system.setup.start_value)
+    update_system_setup_by_update_factor(system, update_factor=last_quote / system.setup.start_value)
     system.set_state(PendingToSellState(system, TrackingToBuyState(system)))
     system.log_info(
         'STOP LOSS because last quote ({}) < stop loss price ({}).'.format(

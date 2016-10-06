@@ -79,14 +79,14 @@ class TrailingOrders(ITrailingOrdersSystem):
 
     def set_next_operation(self, next_operation):
         self.update_setup(
-            beans.TrailingOrderSetup(
-                next_operation=next_operation,
-                start_value=self.setup.start_value,
-                stop_value=self.setup.stop_value,
-                reversal=self.setup.reversal,
-                stop_loss=self.setup.stop_loss,
-                operational_cost=self.setup.operational_cost,
-                profit=self.setup.profit,
+            beans.TrailingOrderSetup.make(
+                next_operation,
+                self.setup.start_value,
+                self.setup.stop_value,
+                self.setup.reversal,
+                self.setup.stop_loss,
+                self.setup.operational_cost,
+                self.setup.profit,
             )
         )
 

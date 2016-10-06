@@ -18,14 +18,6 @@ class TrailingOrdersTestCase(TestCase):
     system_setup = NotImplemented
     system = NotImplemented
 
-    # def test_it_does_not_update_start_stop_values(self):
-    #     self._setup_operation(consts.OrderSide.SELL)
-    #     # last_quote = self.START_VALUE / 2
-    #     self.system.run()
-    #     # self.system.update_start_stop_values_if_necessary(last_quote)
-    #     self.assertEqual(self.system.setup.start_value, self.START_VALUE)
-    #     self.assertEqual(self.system.setup.stop_value, self.STOP_VALUE)
-
     def test_it_gets_buy_price(self):
         self._setup_operation(consts.OrderSide.BUY)
         self.assertEqual(self.system.buy_price, 105.0)
@@ -77,7 +69,7 @@ class TrailingOrdersTestCase(TestCase):
     def _setup_operation(self, next_operation):
         client = mock.Mock()
         bootstrap = TrailingOrdersFactory().make_fake_bootstrap(
-            TrailingOrderSetup(
+            TrailingOrderSetup.make(
                 next_operation=next_operation,
                 start_value=self.START_VALUE,
                 stop_value=self.STOP_VALUE,
