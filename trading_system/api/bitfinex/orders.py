@@ -36,7 +36,7 @@ class BitfinexOrdersApi(IOrdersApi):
     def sell_bitcoins_with_market_order(self, quantity):
         side = consts.OrderSide.SELL
         response = self.client.auth_api.place_order(
-            str(quantity), price='0.0', side=side, ord_type=self.ORDER_TYPE_MARKET
+            str(quantity), price='0.01', side=side, ord_type=self.ORDER_TYPE_MARKET
         )
         return self._make_placed_order_from_response(response)
 
